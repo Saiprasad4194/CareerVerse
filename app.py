@@ -596,6 +596,8 @@ except Exception as e:
 # =====================================================
 
 @app.route("/")
+@app.route("/api/index.py")
+@app.route("/app.py")
 def home():
     return render_template("index.html")
 
