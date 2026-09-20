@@ -22,6 +22,14 @@ from secure_processing import (
     apply_security_headers,
     validate_pdf_stream
 )
+from curated_resources import (
+    enrich_and_sanitize_roadmap_resources,
+    enrich_and_sanitize_navigator_roadmap,
+    enrich_gap_analysis_resources,
+    get_curated_resources_for_skills,
+    build_safe_platform_url,
+    normalize_platform_name,
+)
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() == "pdf"
@@ -1217,10 +1225,11 @@ def get_fallback_roadmap(career, country, months=6):
     sk_b = [f"Foundational {c_title} Concepts", "Industry Fundamentals", "Basic Tooling & Workflow", "Time Management", "Professional Communication"]
     sk_i = [f"Intermediate {c_title} Execution", "Data Analysis & Metrics", "Problem Solving & Troubleshooting", "Standard Compliance & Safety", "Team Collaboration"]
     sk_a = [f"Advanced {c_title} Strategy", "Leadership & Mentorship", "System Optimization & Scalability", "Risk Management & Planning", "Budgeting & Financial Stewardship"]
-    yt = [{"name": "Google Learning Portal", "url": "https://www.youtube.com"}, {"name": "Industry Overview Guides", "url": "https://www.youtube.com"}]
-    courses = [{"name": "Coursera Professional Learning", "url": "https://www.coursera.org"}, {"name": "edX Skill Academy", "url": "https://www.edx.org"}]
-    docs = [{"name": "Official Industry Guidelines", "url": "https://en.wikipedia.org"}]
-    books = [{"name": "Standard Reference Handbook", "url": "https://amazon.com"}]
+    cur_init = get_curated_resources_for_skills(career)
+    yt = cur_init.get("youtube", [{"name": "freeCodeCamp", "platform": "freeCodeCamp", "url": "https://www.freecodecamp.org"}])
+    courses = cur_init.get("courses", [{"name": "Coursera Professional Learning", "platform": "Coursera", "url": "https://www.coursera.org"}])
+    docs = cur_init.get("documentation", [{"name": "Official Industry Guidelines", "platform": "Official Docs", "url": "https://devdocs.io"}])
+    books = cur_init.get("books", [{"name": "Standard Reference Handbook", "platform": "Authoritative Book", "url": "https://www.goodreads.com"}])
     projs_b = [f"Basic {c_title} Practical Study", f"Foundational {c_title} Case Study", f"Initial {c_title} Project", "Process Auditing Task", "Standard Report Writing"]
     projs_i = [f"Intermediate {c_title} Portfolio Project", f"Standard {c_title} Quality Audit", f"Client-Facing {c_title} Execution", "Workflow Integration Project", "Team Performance Assessment"]
     projs_a = [f"Advanced {c_title} Strategy Capstone", f"Enterprise {c_title} Deployment Plan", f"Global {c_title} Performance Analysis", "Strategic Resource Allocation Study", "Industry Compliance Review"]
@@ -1834,12 +1843,12 @@ def get_fallback_roadmap(career, country, months=6):
             "advanced": sk_a
         },
         "roadmap": roadmap_months,
-        "resources": {
+        "resources": enrich_and_sanitize_roadmap_resources({
             "youtube": yt,
             "courses": courses,
             "documentation": docs,
             "books": books
-        },
+        }, career),
         "projects": {
             "beginner": projs_b,
             "intermediate": projs_i,
@@ -1949,12 +1958,14 @@ Roadmap Duration: {duration} ({months} Months){extra_context}
 
 CRITICAL ACCURACY RULES:
 1. Provide DEEP, SPECIFIC, ACCURATE technical topics, real-world tools, authentic books, exact YouTube channels, and genuine certifications for "{career}". NEVER output generic strings like "Channel 1", "Course 1", "Tool 1", "Topic 1", or "Project 1".
-2. You MUST recommend real, verified courses, vetted books/publications, official documentation, and real YouTube channels & communities with direct, valid, and fully-formed URLs.
-   - For 'courses': provide direct URLs on Coursera, edX, Udemy, or official universities (e.g., 'https://www.coursera.org/specializations/python', 'https://react.dev/learn', etc.).
-   - For 'books': provide direct info or search URLs on Amazon, Goodreads, or official portals (e.g., 'https://www.amazon.com/dp/0132350882', etc.).
-   - For 'documentation': provide direct, official URL addresses of the technologies or frameworks (e.g., 'https://docs.python.org/3/', 'https://developer.mozilla.org', etc.).
-   - For 'youtube': provide the actual, specific handle link of verified educational YouTube creators with over 1 MILLION followers (e.g., 'https://www.youtube.com/@freecodecamp', 'https://www.youtube.com/@ProgrammingWithMosh', 'https://www.youtube.com/@MITOCW', 'https://www.youtube.com/@Fireship', 'https://www.youtube.com/@TraversyMedia', etc.). Do NOT recommend channels with low follower counts.
-   - Do NOT use generic placeholder homepages like 'https://www.youtube.com', 'https://www.coursera.org', or 'https://amazon.com'. Provide full, direct paths.
+2. RESOURCE RECOMMENDATIONS & ANTI-HALLUCINATION RULES:
+   - Only suggest learning resources, courses, and certifications from well-known, real platforms (e.g., Coursera, Udemy, YouTube, freeCodeCamp, edX, Official Docs) by name and platform.
+   - DO NOT generate direct links or URLs. Do NOT invent fake URLs or specific deep URLs.
+   - For 'courses': provide {{"name": "<Course Topic / Title>", "platform": "Coursera" | "Udemy" | "edX" | "freeCodeCamp"}}
+   - For 'documentation': provide {{"name": "<Official Technology / Language Docs>", "platform": "Official Docs"}}
+   - For 'youtube': provide {{"name": "<Recognized Creator / Channel Name>", "platform": "YouTube"}}
+   - For 'books': provide {{"name": "<Authoritative Published Book Title by Author>", "platform": "Authoritative Book"}}
+   - For 'certifications': recommend only genuine, widely recognized industry credentials from official accredited organizations (e.g., AWS, Microsoft, Cisco, CompTIA, Google Cloud, PMI). Do NOT invent fictional certificates.
 3. For each month ({months} months total), specify 4-5 exact technologies or skills to learn, 1 real-world portfolio project to build, and 1 clear milestone goal tailored to their background.
 4. For salaries, you MUST ONLY provide the salary in the official currency of {country} ({target_currency_code}) using the official symbol ({target_currency_symbol}). Do NOT output Indian Rupees (INR/₹) unless {country} is India.
    - For India, use Lakhs per year (e.g. "₹8.0L - ₹15.0L / yr").
@@ -2015,16 +2026,16 @@ Return ONLY valid JSON matching this exact structure:
   ],
   "resources": {{
     "youtube": [
-      {{"name": "Real Verified Channel", "url": "https://www.youtube.com/@channel"}}
+      {{"name": "Recognized Educational YouTube Channel", "platform": "YouTube"}}
     ],
     "courses": [
-      {{"name": "Real Course Name", "url": "https://www.coursera.org"}}
+      {{"name": "Vetted Course Subject / Track", "platform": "Coursera"}}
     ],
     "documentation": [
-      {{"name": "Real Official Docs", "url": "https://developer.mozilla.org"}}
+      {{"name": "Official Framework / Library Docs", "platform": "Official Docs"}}
     ],
     "books": [
-      {{"name": "Real Book Title", "url": "https://amazon.com"}}
+      {{"name": "Authoritative Published Book Title by Author", "platform": "Authoritative Book"}}
     ]
   }},
   "projects": {{
@@ -2086,7 +2097,7 @@ Rules & Anti-Hallucination Mandates:
 - JOB DEMAND RATING: Must ONLY be one of ["Low", "Moderate", "High", "Very High"] with a short reason. NEVER output percentage values (e.g. no "88%").
 - CAREER GROWTH OUTLOOK: Must ONLY be one of ["Declining", "Stable", "Growing", "Fast Growing"] with a short explanation. NEVER output percentage values (e.g. no "90%").
 - SALARY ACCURACY: You MUST ensure salary predictions are 80-90% accurate to the real, current market data for {country}. Provide highly realistic salary ranges for fresher, mid, and senior levels in {target_currency_code} ({target_currency_symbol}) currency ONLY. Never output generic or mock Indian Rupees (INR/₹) unless {country} is India.
-- NO HALLUCINATED LINKS: Never invent fake URLs. Use only real official domain names.
+- NO DIRECT OR HALLUCINATED URLS: Do NOT output direct links or generate URL fields in the resources JSON. Only provide real platform names (e.g. Coursera, Udemy, YouTube, freeCodeCamp, Official Docs) and real subject/topic names.
 - MANDATE: EVERY SINGLE ARRAY FIELD (overview.responsibilities, roles, skills.beginner, skills.intermediate, skills.advanced, roadmap.topics, resources.youtube, resources.courses, resources.documentation, resources.books, projects.beginner, projects.intermediate, projects.advanced, certifications, tools, interview_preparation, portfolio_tips, ai_tips, market.top_organizations, market.hiring_hotspots, market.trending_skills, market.daily_plan) MUST CONTAIN AT LEAST 5 ACCURATE, ROLE-SPECIFIC ITEMS.
 - CRITICAL DOMAIN MANDATE: Tailor ALL books, courses, YouTube channels, daily plans, tools, certifications, and projects specifically for "{career}". Never assume programming or software engineering if the role is a non-tech career.
 - EXAMS & PREPARATION: If "{career}" is a competitive exam, entrance exam, or certification test (e.g., UPSC, GATE, JEE, NEET, MPSC, BPSC, SSC, CAT, CLAT, etc.), construct the entire roadmap as a structured preparation curriculum. Map each month to syllabus subjects, revision schedules, and practice/mock tests, rather than traditional job responsibilities.
@@ -2125,6 +2136,11 @@ Rules & Anti-Hallucination Mandates:
             roadmap_data["overview"]["salary"] = norm_sal
             roadmap_data["market"]["salary"] = norm_sal
             roadmap_data["market"] = sanitize_market_hiring_data(roadmap_data["market"], country, career)
+
+            # Enrich and sanitize resources: strictly use verified platforms & safe URLs, backfilled from curated bank
+            raw_res = roadmap_data.get("resources")
+            roadmap_data["resources"] = enrich_and_sanitize_roadmap_resources(raw_res, career, skills)
+
             return success(roadmap_data)
         except Exception as api_err:
             print(f"Roadmap generation error for '{career}': {api_err}")
@@ -2442,6 +2458,8 @@ def generate_fallback_skill_gap(career, user_skills=""):
         "missing_skills": missing,
         "harsh_realities": harsh_realities,
         "priority_skills": priority,
+        "recommended_resources": enrich_gap_analysis_resources(career, user_skills)["recommended_courses"],
+        "recommended_certifications": enrich_gap_analysis_resources(career, user_skills)["recommended_certifications"],
         "recommendation": f"Based on your profile for {c_norm}, you have established a good foundation. Focus on bridging your critical missing skills over the next 3 to 6 months by building hands-on projects and obtaining specialized industry credentials."
     }
 
@@ -2510,6 +2528,15 @@ JSON Format:
   "4. Build a public portfolio showcasing work",
   "5. Develop project management leadership"
 ],
+"recommended_resources": [
+  {{"name": "Core Technical Track", "platform": "Coursera"}},
+  {{"name": "Practical Coding Curriculum", "platform": "freeCodeCamp"}},
+  {{"name": "Official Framework Documentation", "platform": "Official Docs"}}
+],
+"recommended_certifications": [
+  "Industry-standard Certification 1",
+  "Industry-standard Certification 2"
+],
 "harsh_realities": [
   "High competition for entry-level roles",
   "Constant need to upskill and learn new tech",
@@ -2518,6 +2545,11 @@ JSON Format:
 ],
 "recommendation": "Executive 3-4 line recommendation."
 }}
+
+ANTI-HALLUCINATION & RESOURCE RULES:
+1. When recommending resources or courses, ONLY suggest from well-known real platforms (Coursera, Udemy, YouTube, freeCodeCamp, edX, Official Docs) by name and platform.
+2. DO NOT output direct links or generate URLs.
+3. Certifications must be genuine, widely recognized industry credentials from official accredited organizations.
 """
         try:
             text = generate_with_fallback(prompt)
@@ -2525,6 +2557,18 @@ JSON Format:
             result = json.loads(text)
             if not isinstance(result, dict) or "skill_gap_score" not in result:
                 raise ValueError("Incomplete skill gap JSON from AI model")
+
+            gap_res = enrich_gap_analysis_resources(career, skills)
+            clean_rec = []
+            for r in result.get("recommended_resources", []):
+                if isinstance(r, dict):
+                    nm = r.get("name", "").strip()
+                    plat = normalize_platform_name(r.get("platform"))
+                    if nm:
+                        clean_rec.append({"name": nm, "platform": plat, "url": build_safe_platform_url(plat, nm)})
+            result["recommended_resources"] = clean_rec or gap_res["recommended_courses"]
+            if not result.get("recommended_certifications"):
+                result["recommended_certifications"] = gap_res["recommended_certifications"]
         except Exception as e:
             print(f"[SKILL GAP FALLBACK ENGAGED] {e}. Generating fallback skill gap for {career}")
             result = generate_fallback_skill_gap(career, skills)
@@ -4065,9 +4109,9 @@ def col_calculator_api():
                     market_min = sal_data["min"]
                     market_max = sal_data["max"]
                     market_median = sal_data["median"]
-                    market_min_fmt = sal_data.get("min_fmt") or f"{target_info['currency_symbol']}{market_min:,.0f} / yr"
-                    market_max_fmt = sal_data.get("max_fmt") or f"{target_info['currency_symbol']}{market_max:,.0f} / yr"
-                    market_median_fmt = sal_data.get("median_fmt") or f"{target_info['currency_symbol']}{market_median:,.0f} / yr"
+                    market_min_fmt = sal_data.get("min_fmt") or (f"{target_info['currency_symbol']}{market_min:,.0f} / yr" if isinstance(market_min, (int, float)) else str(market_min))
+                    market_max_fmt = sal_data.get("max_fmt") or (f"{target_info['currency_symbol']}{market_max:,.0f} / yr" if isinstance(market_max, (int, float)) else str(market_max))
+                    market_median_fmt = sal_data.get("median_fmt") or (f"{target_info['currency_symbol']}{market_median:,.0f} / yr" if isinstance(market_median, (int, float)) else str(market_median))
                     market_reason = sal_data.get("reason") or f"Typical salary range for {career} in {target_c_res}."
 
         # 4. Cost of Living comparison text and category breakdowns
@@ -4104,7 +4148,7 @@ def col_calculator_api():
         ppp_amt_str = f"{target_info['currency_symbol']}{ppp_salary:,.0f}" if ppp_salary else "N/A"
         
         if market_salary_available:
-            market_range_str = f"{target_info['currency_symbol']}{market_min:,.0f}–{target_info['currency_symbol']}{market_max:,.0f}"
+            market_range_str = f"{market_min_fmt} - {market_max_fmt}"
         else:
             market_range_str = "unavailable"
             
@@ -4521,7 +4565,7 @@ RULES:
 1. skill_gap_score: 0-100 (higher = more prepared). Be accurate based on the profile.
 2. missing_skills: exactly 7 specific skills, ordered by priority (most critical first).
 3. why_explanations: explain WHY each of the top 5 missing skills matters for THIS specific role and THIS specific person's background.
-4. how_to_close: provide specific, actionable closing strategy for top 5 gaps with real resource types.
+4. how_to_close: provide specific, actionable closing strategy for top 5 gaps. Only suggest learning resources and certifications from well-known, real platforms (e.g., Coursera, Udemy, YouTube, freeCodeCamp, official docs) by platform name and topic. DO NOT generate direct links or URLs, and do NOT invent unverified course titles.
 5. Be specific and personalized — do NOT give generic advice.
 """
 
@@ -4573,6 +4617,11 @@ RULES:
                 },
                 "recommendation": f"Based on your {experience} background and interest in {target_role}, you have a solid foundation to build on. Focus on closing the technical skill gaps through hands-on projects, and you'll be competitive within 6-9 months of consistent effort."
             }
+
+        # Enrich with curated real resources & certifications
+        gap_cur = enrich_gap_analysis_resources(target_role, skills_str)
+        result["recommended_courses"] = gap_cur["recommended_courses"]
+        result["recommended_certifications"] = gap_cur["recommended_certifications"]
 
         # --- Write gap_data back to Supabase ---
         if user_id:
@@ -4653,9 +4702,9 @@ Generate a 4-phase learning roadmap. Return ONLY valid JSON:
         {{"title": "Read specific documentation", "type": "Study"}}
       ],
       "resources": [
-        {{"name": "Python.org Docs", "url": "https://docs.python.org/3/"}},
-        {{"name": "freeCodeCamp", "url": "https://www.freecodecamp.org/"}},
-        {{"name": "The Odin Project", "url": "https://www.theodinproject.com/"}}
+        {{"name": "Python 3 Documentation", "platform": "Official Docs"}},
+        {{"name": "Python Programming", "platform": "freeCodeCamp"}},
+        {{"name": "Python for Everybody", "platform": "Coursera"}}
       ]
     }},
     {{
@@ -4670,9 +4719,9 @@ Generate a 4-phase learning roadmap. Return ONLY valid JSON:
         {{"title": "Contribute to an open-source repo", "type": "Community"}}
       ],
       "resources": [
-        {{"name": "Coursera", "url": "https://www.coursera.org/"}},
-        {{"name": "LeetCode", "url": "https://leetcode.com/"}},
-        {{"name": "YouTube: Fireship", "url": "https://www.youtube.com/@Fireship"}}
+        {{"name": "Core Technical Track", "platform": "Coursera"}},
+        {{"name": "Interview Practice Problems", "platform": "LeetCode"}},
+        {{"name": "Engineering Deep Dives", "platform": "YouTube"}}
       ]
     }},
     {{
@@ -4687,9 +4736,9 @@ Generate a 4-phase learning roadmap. Return ONLY valid JSON:
         {{"title": "Complete mock interviews", "type": "Practice"}}
       ],
       "resources": [
-        {{"name": "LeetCode", "url": "https://leetcode.com/"}},
-        {{"name": "System Design Primer", "url": "https://github.com/donnemartin/system-design-primer"}},
-        {{"name": "AWS Free Tier", "url": "https://aws.amazon.com/free/"}}
+        {{"name": "System Design Architecture", "platform": "GitHub"}},
+        {{"name": "Cloud Architecture Specialization", "platform": "Coursera"}},
+        {{"name": "Cloud Documentation", "platform": "Official Docs"}}
       ]
     }},
     {{
@@ -4704,9 +4753,9 @@ Generate a 4-phase learning roadmap. Return ONLY valid JSON:
         {{"title": "Optimize LinkedIn and GitHub profile", "type": "Setup"}}
       ],
       "resources": [
-        {{"name": "LinkedIn", "url": "https://linkedin.com/"}},
-        {{"name": "Pramp", "url": "https://www.pramp.com/"}},
-        {{"name": "Glassdoor", "url": "https://www.glassdoor.com/"}}
+        {{"name": "LinkedIn Learning / Networking", "platform": "LinkedIn Learning"}},
+        {{"name": "Mock Interview Preparation", "platform": "YouTube"}},
+        {{"name": "Tech Interview Guide", "platform": "GitHub"}}
       ]
     }}
   ]
@@ -4715,7 +4764,7 @@ Generate a 4-phase learning roadmap. Return ONLY valid JSON:
 RULES:
 1. Tailor phases specifically to {target_role} and this user's {experience} experience.
 2. Each phase must have exactly 4 milestones — specific and actionable.
-3. All resources must be real, working URLs.
+3. ANTI-HALLUCINATION RESOURCE RULE: Do NOT generate direct links or URLs. Only suggest resources from well-known real platforms (Coursera, Udemy, YouTube, freeCodeCamp, edX, Official Docs) by name and platform.
 4. Adjust difficulty based on current skills: {skills_str}.
 5. Milestones must directly address top skill gaps: {missing_str}.
 """
@@ -4802,6 +4851,9 @@ RULES:
                     }
                 ]
             }
+
+        # Enrich and sanitize phases: guarantee safe platform URLs and real resources
+        result = enrich_and_sanitize_navigator_roadmap(result, target_role, skills_str)
 
         # --- Surface Salary Predictor Benchmark as part of roadmap output ---
         try:
@@ -4923,6 +4975,7 @@ RULES:
 4. If 75%+: focus on job readiness, interviews, and networking.
 5. Be specific to {target_role} — not generic career advice.
 6. next_actions must be immediately actionable (not vague like "keep learning").
+7. ANTI-HALLUCINATION RESOURCE RULE: In how_to_close and next_actions, only recommend learning resources, courses, and certifications from well-known real platforms (Coursera, Udemy, YouTube, freeCodeCamp, edX, official docs) by platform name and subject. DO NOT generate direct links or URLs, and do NOT invent unverified course titles.
 """
 
         try:

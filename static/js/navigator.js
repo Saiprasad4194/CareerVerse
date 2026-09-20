@@ -779,11 +779,14 @@ function renderRoadmap(data) {
             `<span class="phase-skill-chip">${s}</span>`
         ).join('');
 
-        const resourcesHTML = (phase.resources || []).slice(0, 3).map(r =>
-            `<a href="${r.url || '#'}" target="_blank" rel="noopener" class="resource-link">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>${r.name || r}
-             </a>`
-        ).join('');
+        const resourcesHTML = (phase.resources || []).slice(0, 3).map(r => {
+            const name = typeof r === 'object' ? (r.name || 'Resource') : r;
+            const platform = typeof r === 'object' && r.platform ? ` <span class="platform-tag" style="font-size:0.68rem;opacity:0.85;margin-left:4px;font-weight:700;">[${r.platform}]</span>` : '';
+            const url = typeof r === 'object' ? (r.url || '#') : '#';
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="resource-link">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>${name}${platform}
+             </a>`;
+        }).join('');
 
         const phaseCompleted = milestones.length > 0 && milestones.every((m, mi) => !!state.milestones[`${phaseId}_m${mi}`]);
         const phaseInProgress = !phaseCompleted && milestones.some((m, mi) => !!state.milestones[`${phaseId}_m${mi}`]);

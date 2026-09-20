@@ -404,11 +404,12 @@ function renderResourceList(items, fallbackItems, iconClass, linkColor) {
     return list.map(item => {
         if (item && typeof item === "object") {
             const name = item.name || item.title || "Resource Link";
+            const platform = item.platform ? `<span style="font-size: 0.72rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 2px 6px; color: #a1a1aa; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px;">${item.platform}</span>` : "";
             const url = item.url || "#";
             return `
-                <li>
-                    <a href="${url}" target="_blank" style="color: ${linkColor}; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                        <i class="${iconClass}"></i> ${name}
+                <li style="margin-bottom: 6px;">
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" style="color: ${linkColor}; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                        <i class="${iconClass}"></i> ${name} ${platform}
                     </a>
                 </li>
             `;
