@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Predict earning potential and compensation brackets with AI Salary Predictor by CareerVerse AI.">
+
+    <title>AI Salary Predictor | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/salary_predictor.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<section class="salary-page reveal">
+    <div class="hero-badge">
+        <span></span>
+        SALARY PREDICTOR ENGINE
+    </div>
+
+    <h1>Predict Your <span>Earning Potential</span></h1>
+    <p>Discover real-time salary expectations, compensation breakdown, and top hiring location pay bands powered by live market intelligence.</p>
+
+    <div class="salary-container">
+        <div class="salary-inputs-grid">
+            <div class="salary-input-group">
+                <label for="role"><i class="fa-solid fa-briefcase"></i> Target Job Role</label>
+                <input type="text" id="role" class="salary-input" placeholder="e.g. AI Engineer, Full Stack Dev, Product Manager">
+            </div>
+
+            <div class="salary-input-group">
+                <label for="qualification"><i class="fa-solid fa-graduation-cap"></i> Qualification</label>
+                <input type="text" id="qualification" class="salary-input" placeholder="e.g. B.Tech, Master's Degree, Self-Taught">
+            </div>
+
+            <div class="salary-input-group">
+                <label for="experience"><i class="fa-solid fa-user-clock"></i> Years of Experience</label>
+                <input type="text" id="experience" class="salary-input" placeholder="e.g. Entry Level (0-1 yrs), 3-5 yrs, Senior">
+            </div>
+
+            <div class="salary-input-group">
+                <label for="skills"><i class="fa-solid fa-code"></i> Key Technical Skills</label>
+                <input type="text" id="skills" class="salary-input" placeholder="e.g. Python, PyTorch, React, Node.js">
+            </div>
+
+            <div class="salary-input-group">
+                <label for="country"><i class="fa-solid fa-earth-americas"></i> Target Country</label>
+                <input type="text" id="country" class="salary-input" placeholder="e.g. USA, India, Germany, United Kingdom">
+            </div>
+
+            <div class="salary-input-group">
+                <label for="city"><i class="fa-solid fa-city"></i> City / Region (Optional)</label>
+                <input type="text" id="city" class="salary-input" placeholder="e.g. San Francisco, Bangalore, London, Remote">
+            </div>
+
+            <div class="salary-input-group">
+                <label for="seniority"><i class="fa-solid fa-medal"></i> Seniority / Pay Grade (Optional)</label>
+                <input type="text" id="seniority" class="salary-input" placeholder="e.g. Grade E2, Evaluation III, Senior Officer">
+            </div>
+
+            <div class="salary-input-group">
+                <label for="sector"><i class="fa-solid fa-building-shield"></i> Employment Sector</label>
+                <select id="sector" class="salary-input" style="background: rgba(15, 15, 15, 0.95); color: var(--text-primary); border: 1px solid var(--border); border-radius: 10px; height: 48px; padding: 0 16px; width: 100%;">
+                    <option value="private">Private Sector</option>
+                    <option value="public">Public / Government Sector</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="predictBtn" class="salary-btn" type="button">
+            <i class="fa-solid fa-sack-dollar"></i> Predict Salary Range Now
+        </button>
+    </div>
+
+    <div id="result" class="salary-result"></div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/salary_predictor.js') }}"></script>
+
+</body>
+</html>

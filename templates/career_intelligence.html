@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Powered Career Analytics, Salary Intelligence, Future Demand and Market Trends.">
+
+    <title>Career Intelligence | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/career_intelligence.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<section class="intel-page reveal">
+    <div class="hero-badge">
+        <span></span>
+        CAREER INTELLIGENCE DASHBOARD
+    </div>
+
+    <h1>Global Career <span>Market Intelligence</span></h1>
+    <p>AI Powered Analytics • Salary Intelligence • Future Demand Trends • Skill Vectors</p>
+
+    <div class="search-card">
+        <h2><i class="fa-solid fa-chart-pie"></i> Analyze Any Career Market</h2>
+
+        <div class="form-grid">
+            <div class="input-box">
+                <label for="career"><i class="fa-solid fa-briefcase"></i> Target Career Role</label>
+                <input type="text" id="career" placeholder="e.g. AI Engineer, Data Scientist, Doctor, Lawyer">
+            </div>
+
+            <div class="input-box">
+                <label for="country"><i class="fa-solid fa-earth-americas"></i> Country / Region</label>
+                <input type="text" id="country" placeholder="e.g. India, USA, Germany, Japan">
+            </div>
+        </div>
+
+        <button id="analyzeBtn" type="button">
+            <i class="fa-solid fa-magnifying-glass-chart"></i> Generate Intelligence Report
+        </button>
+    </div>
+
+    <div id="loading" class="loading hidden">
+        <div class="loader"></div>
+        <p>Generating Deep Market Intelligence Report...</p>
+    </div>
+
+    <main id="dashboard" class="dashboard hidden">
+        <section class="summary-grid">
+            <div class="summary-card">
+                <span class="title"><i class="fa-solid fa-fire"></i> Market Demand</span>
+                <h2 id="futureRating">--</h2>
+            </div>
+
+            <div class="summary-card">
+                <span class="title"><i class="fa-solid fa-sack-dollar"></i> Overall Avg Pay</span>
+                <h2 id="averageSalary">--</h2>
+            </div>
+
+            <div class="summary-card">
+                <span class="title"><i class="fa-solid fa-shield-halved"></i> AI Confidence</span>
+                <h2 id="confidence">--</h2>
+            </div>
+
+            <div class="summary-card">
+                <span class="title"><i class="fa-solid fa-graduation-cap"></i> Entry Education</span>
+                <h2 id="education">--</h2>
+            </div>
+        </section>
+
+        <!-- 3-TIER SALARY BREAKDOWN -->
+        <section class="salary-tier-card">
+            <h2><i class="fa-solid fa-sack-dollar"></i> Salary Breakdown By Experience Level</h2>
+            <div class="salary-tiers-grid">
+                <div class="tier-box fresher">
+                    <div class="tier-badge"><i class="fa-solid fa-seedling"></i> Fresher Level</div>
+                    <small>0 - 2 Years Experience</small>
+                    <h3 id="fresherSalary">--</h3>
+                </div>
+
+                <div class="tier-box mid">
+                    <div class="tier-badge"><i class="fa-solid fa-bolt"></i> Mid Level</div>
+                    <small>3 - 6 Years Experience</small>
+                    <h3 id="midSalary">--</h3>
+                </div>
+
+                <div class="tier-box senior">
+                    <div class="tier-badge"><i class="fa-solid fa-crown"></i> Experienced Level</div>
+                    <small>7+ Years Experience</small>
+                    <h3 id="seniorSalary">--</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="overview-card">
+            <h2><i class="fa-solid fa-newspaper"></i> Executive Market Summary</h2>
+            <p id="overview">Waiting for analysis...</p>
+        </section>
+
+        <section class="chart-grid">
+            <div class="chart-card">
+                <h2><i class="fa-solid fa-chart-line"></i> Career Demand Trend</h2>
+                <div class="chart-wrapper">
+                    <canvas id="careerDemandChart"></canvas>
+                </div>
+                <p id="careerDemandReason" class="chart-reason"></p>
+            </div>
+
+            <div class="chart-card">
+                <h2><i class="fa-solid fa-sack-dollar"></i> Salary Trajectory</h2>
+                <div class="chart-wrapper">
+                    <canvas id="salaryGrowthChart"></canvas>
+                </div>
+                <p id="salaryReason" class="chart-reason"></p>
+            </div>
+        </section>
+
+        <section class="chart-grid">
+            <div class="chart-card">
+                <h2><i class="fa-solid fa-users"></i> Competition Density</h2>
+                <div class="chart-wrapper">
+                    <canvas id="competitionChart"></canvas>
+                </div>
+                <p id="competitionReason" class="chart-reason"></p>
+            </div>
+
+            <div class="chart-card">
+                <h2><i class="fa-solid fa-microchip"></i> Tech Adoption Rate</h2>
+                <div class="chart-wrapper">
+                    <canvas id="technologyChart"></canvas>
+                </div>
+                <p id="technologyReason" class="chart-reason"></p>
+            </div>
+        </section>
+
+        <section class="chart-grid">
+            <div class="chart-card">
+                <h2><i class="fa-solid fa-robot"></i> AI Automation Risk</h2>
+                <div class="automation-box">
+                    <h1 id="automationScore">0%</h1>
+                    <p id="automationReason"></p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h2><i class="fa-solid fa-list-check"></i> Skill Competency Matrix</h2>
+                <div class="chart-wrapper">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+                <p id="skillsReason" class="chart-reason"></p>
+            </div>
+        </section>
+
+        <section class="chart-card">
+            <h2><i class="fa-solid fa-globe"></i> Global Demand Distribution</h2>
+            <div class="chart-wrapper">
+                <canvas id="globalDemandChart"></canvas>
+            </div>
+            <p id="globalReason" class="chart-reason"></p>
+        </section>
+
+        <section class="list-grid">
+            <div class="list-card">
+                <h2><i class="fa-solid fa-building"></i> Top Recruiting Organizations</h2>
+                <ul id="topCompanies"></ul>
+            </div>
+
+            <div class="list-card">
+                <h2><i class="fa-solid fa-wrench"></i> Recommended Core Tools</h2>
+                <ul id="recommendedTools"></ul>
+            </div>
+        </section>
+
+        <section class="list-grid">
+            <div class="list-card">
+                <h2><i class="fa-solid fa-certificate"></i> Key Industry Certifications</h2>
+                <ul id="certifications"></ul>
+            </div>
+
+            <div class="list-card">
+                <h2><i class="fa-solid fa-rocket"></i> Emerging 5-Year Opportunities</h2>
+                <ul id="futureOpportunities"></ul>
+            </div>
+        </section>
+
+        <section class="timeline-card">
+            <h2><i class="fa-solid fa-route"></i> Career Progression Pathway</h2>
+            <div id="careerPath"></div>
+        </section>
+
+        <section class="advice-card">
+            <h2><i class="fa-solid fa-lightbulb"></i> Strategic AI Recommendations</h2>
+            <div id="aiAdvice"></div>
+        </section>
+    </main>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/career_intelligence.js') }}"></script>
+
+</body>
+</html>

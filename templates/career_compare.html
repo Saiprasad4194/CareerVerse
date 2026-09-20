@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Side-by-side AI career comparison tool — compare salary, demand, growth, and difficulty with CareerVerse AI.">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title>Career Compare AI | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/career_compare.css') }}?v={{ range(1000, 999999) | random }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<section class="compare-page reveal">
+    <div class="hero-badge">
+        <span></span>
+        CAREER EVALUATION & DECISION ENGINE
+    </div>
+
+    <h1>Compare Career Paths <span>With Real Local Data</span></h1>
+    <p>Compare ground-truth local currency pay bands, hiring demand ratings, preparation timelines, top employers, and primary hiring hubs side by side.</p>
+
+    <div class="compare-form-container">
+        <div class="compare-inputs-grid">
+            <div class="compare-input-group">
+                <label for="career1"><i class="fa-solid fa-briefcase"></i> Primary Career (Role 1)</label>
+                <input type="text" id="career1" class="compare-input" placeholder="e.g. AI Engineer, Software Architect">
+            </div>
+
+            <div class="compare-input-group">
+                <label for="career2"><i class="fa-solid fa-rocket"></i> Target Secondary Career (Role 2)</label>
+                <input type="text" id="career2" class="compare-input" placeholder="e.g. Data Scientist, Product Manager">
+            </div>
+
+            <div class="compare-input-group full-width">
+                <label for="country"><i class="fa-solid fa-earth-americas"></i> Target Location / Country (Optional)</label>
+                <input type="text" id="country" class="compare-input" placeholder="e.g. India, USA, Japan, Germany">
+            </div>
+        </div>
+
+        <button id="compareBtn" class="compare-btn" type="button">
+            <i class="fa-solid fa-scale-balanced"></i> Compare Careers Now
+        </button>
+    </div>
+
+    <div id="result" class="compare-results-container"></div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/career_compare.js') }}?v={{ range(100000, 9999999) | random }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.comparison-summary, .compare-metric, .bar-row').forEach(el => el.remove());
+    });
+</script>
+
+</body>
+</html>

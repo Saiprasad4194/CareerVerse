@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Unfiltered day-in-the-life realities, stress levels, and salary scope with CareerVerse AI Career Reality Check.">
+
+    <title>Career Reality AI | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/career_reality.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<section class="reality-page reveal">
+    <div class="hero-badge">
+        <span></span>
+        CAREER REALITY ENGINE
+    </div>
+
+    <h1>Unfiltered <span>Career Reality Check</span></h1>
+    <p>Discover the honest day-in-the-life facts, stress indices, work-life balance, and actual growth trajectories before making your next career pivot.</p>
+
+    <div class="reality-container">
+        <!-- Quick Select Role Pills -->
+        <div class="quick-roles" style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <span class="role-pill" data-role="AI & Machine Learning Engineer">⚡ AI Engineer</span>
+            <span class="role-pill" data-role="Investment Banker">💼 Investment Banker</span>
+            <span class="role-pill" data-role="Full Stack Developer">💻 Full Stack Dev</span>
+            <span class="role-pill" data-role="Data Scientist">📊 Data Scientist</span>
+            <span class="role-pill" data-role="Cyber Security Analyst">🛡️ Cyber Security</span>
+            <span class="role-pill" data-role="Product Manager">🎯 Product Manager</span>
+        </div>
+
+        <div class="reality-inputs-grid">
+            <div class="reality-input-group">
+                <label for="career"><i class="fa-solid fa-briefcase"></i> Target Career Role</label>
+                <input type="text" id="career" class="reality-input" placeholder="e.g. AI Engineer, Investment Banker, Doctor">
+            </div>
+
+            <div class="reality-input-group">
+                <label for="country"><i class="fa-solid fa-earth-americas"></i> Preferred Location / Country</label>
+                <input type="text" id="country" class="reality-input" placeholder="e.g. India, USA, Germany, Japan">
+            </div>
+        </div>
+
+        <button id="realityBtn" class="reality-btn" type="button">
+            <i class="fa-solid fa-masks-theater"></i> Reveal Unfiltered Career Reality
+        </button>
+    </div>
+
+    <div id="result" class="reality-result"></div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/career_reality.js') }}"></script>
+
+</body>
+</html>

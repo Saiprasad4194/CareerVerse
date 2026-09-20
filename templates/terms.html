@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Terms of Service for CareerVerse AI — Understand our advisory guidelines, acceptable use policies, and free open platform access.">
+
+    <title>Terms of Service | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/legal.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<div class="legal-page">
+    <!-- HERO -->
+    <div class="legal-hero reveal">
+        <div class="legal-badge">
+            <span></span>
+            TERMS & CONDITIONS
+        </div>
+        <h1>Terms of <span>Service</span></h1>
+        <p>Please read these Terms of Service carefully before utilizing the CareerVerse AI platform, roadmap generators, and analytics suites.</p>
+        <span class="last-updated">Last Updated: August 2026 • Effective Immediately</span>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="legal-container reveal">
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-file-contract"></i> 1. Acceptance of Terms</h2>
+            <p>By accessing or using CareerVerse AI ("the Platform"), you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you should refrain from using the Platform's AI tools and roadmap features.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-triangle-exclamation"></i> 2. Advisory & Informational Disclaimer</h2>
+            <p>CareerVerse AI provides learning milestones, curriculum suggestions, salary approximations, and market intelligence solely for <strong>educational and advisory purposes</strong>:</p>
+            <ul>
+                <li><strong>Salary Figures:</strong> Compensation figures and salary bands represent statistical estimates derived from empirical industry benchmarks. Actual remuneration depends on company hiring budgets, individual interview performance, candidate negotiation, and macroeconomic fluctuations.</li>
+                <li><strong>Career Decisions:</strong> While our AI engines offer high-accuracy roadmaps, users are encouraged to conduct their own independent verification before committing to career transitions or financial expenditures.</li>
+            </ul>
+            <div class="highlight-box">
+                <p>⚠️ <strong>No Employment Guarantee:</strong> CareerVerse AI is not a staffing agency and does not guarantee job placement, hiring guarantees, or legal representations of employment contracts.</p>
+            </div>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-hand-holding-dollar"></i> 3. 100% Free & Open Access</h2>
+            <p>All 10 tools in the CareerVerse AI Suite are provided free of charge to students, engineers, and professionals globally. We do not require subscription fees or paywalled unlocks to view full learning roadmaps or salary percentiles.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-ban"></i> 4. Acceptable Use Policy</h2>
+            <p>When interacting with the Platform and AI endpoints, you agree NOT to:</p>
+            <ul>
+                <li>Attempt to reverse-engineer, scrape, DDoS, or systematically overwhelm our backend AI servers.</li>
+                <li>Submit malicious prompt-injection payloads, harmful code snippets, or unlawful content through our career chat and resume upload fields.</li>
+                <li>Impersonate legal entities or misrepresent CareerVerse AI outputs as certified academic accreditations.</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-copyright"></i> 5. Intellectual Property</h2>
+            <p>The CareerVerse AI brand, website interface, custom styling, curated validation datasets, and underlying code architectures are the intellectual property of the CareerVerse AI team. You retain full ownership of any personal resumes or custom learning roadmaps generated for your own personal use.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-gavel"></i> 6. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by applicable law, CareerVerse AI and its maintainers shall not be liable for any indirect, incidental, or consequential damages resulting from reliance on career roadmaps or salary estimates provided by the AI.</p>
+        </div>
+    </div>
+</div>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+
+</body>
+</html>

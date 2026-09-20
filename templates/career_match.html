@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate your career compatibility and skill fit with CareerVerse AI Career Match.">
+
+    <title>Career Match AI | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/career_match.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<section class="match-page reveal">
+    <div class="hero-badge">
+        <span></span>
+        AI CAREER MATCH ENGINE
+    </div>
+
+    <h1>Discover Your Perfect <span>Career Match</span></h1>
+    <p>Input your background, technical skills, and strengths to evaluate compatibility against your dream job role.</p>
+
+    <div class="career-match-card">
+        <div class="match-inputs-grid">
+            <div class="career-input-group">
+                <label for="career"><i class="fa-solid fa-bullseye"></i> Target Career Role</label>
+                <input type="text" id="career" class="career-input" placeholder="e.g. AI Engineer, Data Analyst, Cloud Architect">
+            </div>
+
+            <div class="career-input-group">
+                <label for="qualification"><i class="fa-solid fa-graduation-cap"></i> Highest Qualification</label>
+                <input type="text" id="qualification" class="career-input" placeholder="e.g. B.Tech Computer Science, MBA, BCA">
+            </div>
+
+            <div class="career-input-group">
+                <label for="skills"><i class="fa-solid fa-code"></i> Current Technical Skills</label>
+                <input type="text" id="skills" class="career-input" placeholder="e.g. Python, SQL, React, Machine Learning">
+            </div>
+
+            <div class="career-input-group">
+                <label for="strengths"><i class="fa-solid fa-bolt"></i> Personal Strengths</label>
+                <input type="text" id="strengths" class="career-input" placeholder="e.g. Problem Solving, Analytics, Leadership">
+            </div>
+
+            <div class="career-input-group">
+                <label for="experience"><i class="fa-solid fa-user-clock"></i> Experience Level</label>
+                <input type="text" id="experience" class="career-input" placeholder="e.g. Fresher, 1-2 Years, Senior">
+            </div>
+
+            <div class="career-input-group">
+                <label for="country"><i class="fa-solid fa-earth-americas"></i> Location / Country</label>
+                <input type="text" id="country" class="career-input" placeholder="e.g. India, USA, Germany, Remote">
+            </div>
+        </div>
+
+        <button id="checkBtn" class="career-btn" type="button">
+            <i class="fa-solid fa-magnifying-glass"></i> Calculate Career Match
+        </button>
+    </div>
+
+    <div id="result" class="match-results-container"></div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/career_match.js') }}"></script>
+
+</body>
+</html>

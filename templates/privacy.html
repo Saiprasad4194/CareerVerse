@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy Policy for CareerVerse AI — Learn how we protect user data, resume files, and AI query privacy with 100% transparency.">
+
+    <title>Privacy Policy | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/legal.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<div class="legal-page">
+    <!-- HERO -->
+    <div class="legal-hero reveal">
+        <div class="legal-badge">
+            <span></span>
+            TRUST & SECURITY
+        </div>
+        <h1>Privacy <span>Policy</span></h1>
+        <p>Your privacy and professional confidentiality are paramount. Here is a clear, transparent breakdown of how CareerVerse AI handles data.</p>
+        <span class="last-updated">Last Updated: August 2026 • Effective Immediately</span>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="legal-container reveal">
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-shield-halved"></i> 1. Zero Sale of Personal Data</h2>
+            <p>CareerVerse AI operates as a 100% free and open career intelligence ecosystem. We do not sell, monetize, rent, or lease your personal information, job queries, or resume contents to any third-party advertisers or recruitment agencies.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-file-pdf"></i> 2. In-Memory Resume Processing</h2>
+            <p>When you upload your PDF resume to our <strong>ATS Resume Analyzer</strong>:</p>
+            <ul>
+                <li>Your file is processed dynamically in volatile server memory using <code>pdfplumber</code> purely to extract raw skill vectors and project text.</li>
+                <li>Your uploaded PDF is never stored on permanent disk storage or retained after the analysis response is returned.</li>
+                <li>Your resume text is never used to train public machine learning foundation models.</li>
+            </ul>
+            <div class="highlight-box">
+                <p>🔒 <strong>Zero Disk Retention:</strong> Once your resume evaluation score and bullet point suggestions are generated, the raw document buffer is discarded immediately.</p>
+            </div>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-brain"></i> 3. AI Query Interactions</h2>
+            <p>When you use the AI Roadmap Generator, Career Chat, or Market Intelligence tools, your role inputs (e.g., "AI Engineer", "Data Scientist") and question prompts are forwarded securely to Google's enterprise Gemini AI endpoints to generate real-time evaluations.</p>
+            <ul>
+                <li>Prompts are processed over encrypted TLS 1.3 connections.</li>
+                <li>We do not store your private chat dialogues on public database servers.</li>
+                <li>Client-side chat history is stored locally in your browser's <code>localStorage</code> / <code>sessionStorage</code> for your own convenience.</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-cookie-bite"></i> 4. Cookies & Session Storage</h2>
+            <p>CareerVerse AI does not use tracking cookies or invasive cross-site behavioral monitoring. We use minimal functional cookies and browser storage strictly required for theme preferences and session integrity.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-user-check"></i> 5. User Rights & Data Deletion</h2>
+            <p>You have full control over your data. Because we do not mandate account creation or store long-term user dossiers, clearing your browser cache and cookies immediately removes all traces of previous searches and tool outputs from your client device.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2><i class="fa-solid fa-envelope"></i> 6. Contact & Inquiries</h2>
+            <p>If you have any questions, compliance requests, or privacy suggestions, please contact our team via the <a href="/support" style="color: var(--accent); text-decoration: underline;">Support Center</a>.</p>
+        </div>
+    </div>
+</div>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+
+</body>
+</html>

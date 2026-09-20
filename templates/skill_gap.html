@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Identify skill gaps between your current knowledge and target role with CareerVerse AI.">
+
+    <title>AI Skill Gap Analyzer | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skill_gap.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<section class="skill-page reveal">
+    <div class="hero-badge">
+        <span></span>
+        SKILL GAP ANALYZER
+    </div>
+
+    <h1>Identify & Close Your <span>Skill Gaps</span></h1>
+    <p>Compare your current technical competencies against target job requirements to pinpoint critical missing skills and learning priorities.</p>
+
+    <div class="skill-container">
+        <div class="input-group">
+            <label for="career"><i class="fa-solid fa-bullseye"></i> Target Career Role</label>
+            <input type="text" id="career" placeholder="e.g. AI Engineer, Full Stack Developer, Data Analyst">
+        </div>
+
+        <div class="input-group">
+            <label for="skills"><i class="fa-solid fa-code"></i> Your Current Skills & Technologies</label>
+            <textarea id="skills" placeholder="List what you already know (e.g. Python, HTML, Basic SQL, Git)..."></textarea>
+        </div>
+
+        <button id="analyzeBtn" type="button">
+            <i class="fa-solid fa-chart-line"></i> Analyze Skill Gap Now
+        </button>
+    </div>
+
+    <div id="result" class="skill-results-container"></div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/skill_gap.js') }}"></script>
+
+</body>
+</html>

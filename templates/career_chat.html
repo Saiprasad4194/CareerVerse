@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Career Mentor Chat | CareerVerse AI</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/career_chat.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body class="chat-body">
+
+<div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+{% include 'partials/navbar.html' %}
+
+<!-- ================= MAIN CHAT WORKSPACE ================= -->
+
+<div class="chat-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="chat-sidebar" id="chatSidebar">
+        <div class="sidebar-top">
+            <button id="newChatBtn" class="new-chat-btn">
+                <i class="fa-solid fa-plus"></i> New Conversation
+            </button>
+        </div>
+
+        <div class="sidebar-section">
+            <span class="sidebar-label"><i class="fa-solid fa-clock-rotate-left"></i> Recent Conversations</span>
+            <div id="recentChatsList" class="recent-chats-list">
+                <div class="recent-item active" data-id="default">
+                    <i class="fa-regular fa-message"></i>
+                    <span class="recent-title">Current Career Session</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <span class="sidebar-label"><i class="fa-solid fa-lightbulb"></i> Career Topics</span>
+            <div class="topic-chips">
+                <button class="topic-chip" data-prompt="How do I transition into AI & Machine Learning in 2026?"><i class="fa-solid fa-brain"></i> AI & ML</button>
+                <button class="topic-chip" data-prompt="What are the essential skills for a Cloud Solutions Architect?"><i class="fa-solid fa-cloud"></i> Cloud Arch</button>
+                <button class="topic-chip" data-prompt="Give me a step-by-step roadmap to become a Senior Full Stack Engineer."><i class="fa-solid fa-code"></i> Full Stack</button>
+                <button class="topic-chip" data-prompt="How to negotiate salary for a Mid-Level Data Scientist role?"><i class="fa-solid fa-sack-dollar"></i> Salary Negotiation</button>
+                <button class="topic-chip" data-prompt="What are top STAR method behavioral interview questions for Tech Leads?"><i class="fa-solid fa-user-tie"></i> Tech Leadership</button>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="ai-status-card">
+                <div class="status-indicator"></div>
+                <div class="status-info">
+                    <span class="status-title">CareerVerse AI Mentor</span>
+                    <span class="status-model">Powered by Gemini 2.5 Pro</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CHAT AREA -->
+    <main class="chat-main">
+
+        <!-- CHAT HEADER -->
+        <header class="chat-header">
+            <div class="chat-header-left">
+                <button id="toggleSidebarBtn" class="sidebar-toggle-btn" title="Toggle Sidebar">
+                    <i class="fa-solid fa-sidebar"></i>
+                </button>
+                <div class="chat-title-group">
+                    <h2><i class="fa-solid fa-robot" style="color: var(--accent);"></i> Executive AI Career Mentor</h2>
+                    <span class="chat-subtitle">Real-time career guidance, skill roadmaps & salary insights</span>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button id="clearChatBtn" class="header-action-btn" title="Clear Chat History">
+                    <i class="fa-solid fa-trash-can"></i> Clear Chat
+                </button>
+                <button id="copyChatBtn" class="header-action-btn" title="Copy Transcript">
+                    <i class="fa-regular fa-copy"></i> Copy Session
+                </button>
+            </div>
+        </header>
+
+        <!-- CHAT MESSAGES FEED -->
+        <div id="chatBox" class="chat-messages-container">
+            <!-- DEFAULT WELCOME HERO SCREEN -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI CAREER MENTOR</div>
+                <h1>Where would you like to take your <span class="gradient-text">Career today?</span></h1>
+                <p>Ask anything about tech roles, skill roadmaps, interview strategies, or global pay bands.</p>
+
+                <div class="suggestion-cards-grid">
+                    <div class="suggestion-card" data-prompt="What are the highest paying tech careers in 2026 and what skills do they require?">
+                        <div class="card-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <h4>Top Paying Careers 2026</h4>
+                        <p>Explore highest paying roles in US, Europe & India with required skill sets.</p>
+                    </div>
+                    <div class="suggestion-card" data-prompt="How should I prepare for a Senior Software Engineer System Design interview?">
+                        <div class="card-icon"><i class="fa-solid fa-diagram-project"></i></div>
+                        <h4>System Design Interview</h4>
+                        <p>Master architecture, scalability, microservices, and database trade-offs.</p>
+                    </div>
+                    <div class="suggestion-card" data-prompt="What is a realistic 6-month roadmap to become a DevOps & Cloud Engineer?">
+                        <div class="card-icon"><i class="fa-solid fa-server"></i></div>
+                        <h4>DevOps 6-Month Roadmap</h4>
+                        <p>Learn Docker, Kubernetes, AWS, Terraform, and CI/CD pipelines step-by-step.</p>
+                    </div>
+                    <div class="suggestion-card" data-prompt="How do I optimize my LinkedIn profile and resume to get noticed by FAANG recruiters?">
+                        <div class="card-icon"><i class="fa-solid fa-file-lines"></i></div>
+                        <h4>Resume & Recruiter Tips</h4>
+                        <p>Actionable strategies to pass ATS scanners and attract top tech recruiters.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK PROMPT PILLS -->
+        <div class="input-prompt-pills">
+            <button class="pill-btn" data-prompt="What are top 5 certifications for Cloud Engineers?">☁️ Cloud Certs</button>
+            <button class="pill-btn" data-prompt="How to negotiate equity and salary stock options?">💰 Equity & Stock</button>
+            <button class="pill-btn" data-prompt="Give me STAR method interview responses for teamwork conflict.">🤝 Behavioral Qs</button>
+            <button class="pill-btn" data-prompt="What is the difference between Data Engineer and ML Engineer roles?">📊 Data vs ML</button>
+        </div>
+
+        <!-- CHAT INPUT CONTAINER -->
+        <div class="chat-input-bar">
+            <div class="input-wrapper">
+                <textarea id="userMessage" placeholder="Ask your AI Career Mentor anything... (Press Enter to send, Shift+Enter for newline)" rows="1"></textarea>
+                <button id="sendBtn" class="send-message-btn" title="Send Message">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+            </div>
+            <div class="input-footer">
+                <span>CareerVerse AI Mentor provides AI-assisted career insights. Verify specific job offers with hiring managers.</span>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/career_chat.js') }}?v=20260806_v5001"></script>
+
+</body>
+</html>

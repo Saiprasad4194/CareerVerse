@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate Purchasing Power Parity (PPP) and cost-of-living adjusted salaries across 195+ countries with CareerVerse AI.">
+    <title>Cost of Living &amp; PPP Calculator | CareerVerse AI</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?v=20260809_v5">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/col_calculator.css') }}?v=20260817_v1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<section class="col-page reveal">
+    <div class="hero-glow"></div>
+    <div class="hero-grid-pattern"></div>
+    <div class="hero-badge">
+        <span></span>
+        PPP &amp; COMPENSATION LOCALIZATION ENGINE
+    </div>
+    
+    <h1>Cost of Living <span>&amp; PPP Calculator</span></h1>
+    <p>Convert your salary to its purchasing-power-equivalent and compare it with actual market compensation and local price indices across 195+ countries.</p>
+    
+    <div class="calculator-card">
+        <h2><i class="fa-solid fa-calculator"></i> PPP Salary Adjuster</h2>
+        
+        <div class="calculator-grid">
+            <div class="input-box">
+                <label for="baseSalary"><i class="fa-solid fa-wallet"></i> Current Base Salary</label>
+                <input type="number" id="baseSalary" placeholder="e.g. 600000" min="1" value="600000">
+            </div>
+            
+            <div class="input-box">
+                <label for="baseCountry"><i class="fa-solid fa-map-pin"></i> Base Country</label>
+                <select id="baseCountry">
+                    <!-- Loaded dynamically from static/data/countries_currency.json -->
+                </select>
+            </div>
+            
+            <div class="input-box">
+                <label for="targetCountry"><i class="fa-solid fa-location-arrow"></i> Target Country</label>
+                <select id="targetCountry">
+                    <!-- Loaded dynamically from static/data/countries_currency.json -->
+                </select>
+            </div>
+
+            <div class="input-box">
+                <label for="career"><i class="fa-solid fa-briefcase"></i> Career / Job Role</label>
+                <input type="text" id="career" placeholder="e.g. Risk Analyst, Software Engineer" value="Risk Analyst">
+            </div>
+
+            <div class="input-box">
+                <label for="experience"><i class="fa-solid fa-chart-line"></i> Experience Level</label>
+                <select id="experience">
+                    <option value="Entry Level" selected>Entry Level (0-2 Yrs)</option>
+                    <option value="Mid Level">Mid Level (3-5 Yrs)</option>
+                    <option value="Senior Level">Senior / Lead (6+ Yrs)</option>
+                </select>
+            </div>
+
+            <div class="input-box">
+                <label for="targetCity"><i class="fa-solid fa-city"></i> Target City (Optional)</label>
+                <input type="text" id="targetCity" placeholder="e.g. Dublin, London, New York" value="Dublin">
+            </div>
+        </div>
+        
+        <button id="calculateBtn" type="button">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Calculate Adjusted Salary
+        </button>
+    </div>
+    
+    <div id="loading" class="loading hidden">
+        <div class="loader"></div>
+        <p>Analyzing purchasing power and local indexing...</p>
+    </div>
+    
+    <div id="result" class="result-dashboard hidden">
+        <!-- Dashboard Card Layout -->
+        <div class="results-layout-grid">
+            
+            <!-- 💱 Card 1: Currency Conversion -->
+            <div class="dashboard-card card-conversion">
+                <div class="card-header">
+                    <span class="card-icon"><i class="fa-solid fa-right-left"></i></span>
+                    <h4>Currency Conversion</h4>
+                </div>
+                <div class="card-body">
+                    <div class="number-stat" id="convertedSalaryDisplay">--</div>
+                    <p class="stat-explanation">Nominal currency value calculated using standard market exchange rates.</p>
+                </div>
+            </div>
+            
+            <!-- 📊 Card 2: PPP Purchasing Power -->
+            <div class="dashboard-card card-ppp">
+                <div class="card-header">
+                    <span class="card-icon"><i class="fa-solid fa-scale-balanced"></i></span>
+                    <h4>PPP Purchasing Power Comparison</h4>
+                </div>
+                <div class="card-body">
+                    <div class="number-stat" id="pppSalaryDisplay">--</div>
+                    <p class="stat-explanation">Equated local purchasing power based on official PPP conversion factors.</p>
+                    <div class="ppp-warning">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>This is a statistical purchasing-power comparison and <strong>NOT</strong> the expected market salary in the destination country.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 💼 Card 3: Actual Market Salary -->
+            <div class="dashboard-card card-market">
+                <div class="card-header">
+                    <span class="card-icon"><i class="fa-solid fa-briefcase"></i></span>
+                    <h4>Actual Market Salary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="market-range-display">
+                        <span class="range-label">Typical Range:</span>
+                        <h2 id="marketRangeDisplay">--</h2>
+                    </div>
+                    <p class="stat-explanation" id="marketReasonDisplay">Verified benchmark salary for this career, experience, and destination location.</p>
+                </div>
+            </div>
+
+            <!-- 🏠 Card 4: Cost of Living Breakdown -->
+            <div class="dashboard-card card-col">
+                <div class="card-header">
+                    <span class="card-icon"><i class="fa-solid fa-house-chimney"></i></span>
+                    <h4>Cost of Living Breakdown</h4>
+                </div>
+                <div class="card-body">
+                    <p class="stat-explanation" id="colComparisonTextDisplay">--</p>
+                    
+                    <div class="col-bars-container">
+                        <!-- Housing -->
+                        <div class="col-bar-item">
+                            <div class="bar-info">
+                                <span>Housing (Rent/Mortgage)</span>
+                                <span id="housingDiffDisplay" class="diff-badge">--</span>
+                            </div>
+                            <div class="bar-track"><div id="housingBarFill" class="bar-fill"></div></div>
+                        </div>
+
+                        <!-- Food -->
+                        <div class="col-bar-item">
+                            <div class="bar-info">
+                                <span>Food &amp; Groceries</span>
+                                <span id="foodDiffDisplay" class="diff-badge">--</span>
+                            </div>
+                            <div class="bar-track"><div id="foodBarFill" class="bar-fill"></div></div>
+                        </div>
+
+                        <!-- Transportation -->
+                        <div class="col-bar-item">
+                            <div class="bar-info">
+                                <span>Transportation</span>
+                                <span id="transDiffDisplay" class="diff-badge">--</span>
+                            </div>
+                            <div class="bar-track"><div id="transBarFill" class="bar-fill"></div></div>
+                        </div>
+
+                        <!-- Utilities -->
+                        <div class="col-bar-item">
+                            <div class="bar-info">
+                                <span>Utilities</span>
+                                <span id="utilDiffDisplay" class="diff-badge">--</span>
+                            </div>
+                            <div class="bar-track"><div id="utilBarFill" class="bar-fill"></div></div>
+                        </div>
+
+                        <!-- General Index -->
+                        <div class="col-bar-item">
+                            <div class="bar-info">
+                                <span>General Expenses</span>
+                                <span id="generalDiffDisplay" class="diff-badge">--</span>
+                            </div>
+                            <div class="bar-track"><div id="generalBarFill" class="bar-fill"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 💡 Card 5: CareerVerse Recommendation -->
+            <div class="dashboard-card card-recommendation">
+                <div class="card-header">
+                    <span class="card-icon"><i class="fa-solid fa-lightbulb"></i></span>
+                    <h4>CareerVerse Intelligence &amp; Recommendation</h4>
+                </div>
+                <div class="card-body">
+                    <p class="intelligent-analysis-text" id="intelligentAnalysisDisplay">--</p>
+                    
+                    <div class="insights-box">
+                        <h5>Key Relocation Takeaways</h5>
+                        <ul id="insightsList" class="insights-list">
+                            <!-- Dynamic bullets here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/col_calculator.js') }}?v=20260817_v1"></script>
+
+</body>
+</html>

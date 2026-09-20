@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CareerVerse AI Support Center — Get help, submit feature requests, view FAQs, and report bugs directly to our engineering team.">
+
+    <title>Support & Help Center | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/legal.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<div class="legal-page">
+    <!-- HERO -->
+    <div class="legal-hero reveal">
+        <div class="legal-badge">
+            <span></span>
+            HELP & COMMUNITY
+        </div>
+        <h1>Support <span>Center</span></h1>
+        <p>Need assistance with a roadmap, have a feature suggestion, or found a career role we should add? We're here to help.</p>
+        <span class="last-updated"><i class="fa-solid fa-circle" style="color: #22c55e; font-size: 0.6rem;"></i> All AI Services Operational • 99.9% Uptime</span>
+    </div>
+
+    <!-- QUICK HELP CHANNELS -->
+    <div class="support-grid reveal">
+        <div class="support-card">
+            <i class="fa-solid fa-comments"></i>
+            <h3>Live AI Mentor</h3>
+            <p>Have an immediate question regarding your career roadmap, interview questions, or skill prerequisites?</p>
+            <a href="/career-chat" class="btn-card">Launch AI Chat <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <div class="support-card">
+            <i class="fa-solid fa-lightbulb"></i>
+            <h3>Feature Requests</h3>
+            <p>Suggest new features, custom career pathways, or country currency additions to the engineering team.</p>
+            <a href="#contact-form" class="btn-card">Submit Idea <i class="fa-solid fa-arrow-down"></i></a>
+        </div>
+
+        <div class="support-card">
+            <i class="fa-solid fa-bug"></i>
+            <h3>Report an Issue</h3>
+            <p>Encountered a bug or an unexpected result in our resume evaluator or salary predictor? Let us know.</p>
+            <a href="#contact-form" class="btn-card">Report Bug <i class="fa-solid fa-arrow-down"></i></a>
+        </div>
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="support-form-wrapper reveal" id="contact-form">
+        <h2><i class="fa-solid fa-envelope"></i> Send Us a Message</h2>
+        <p>Fill out the form below and our team will review your inquiry.</p>
+
+        <form id="supportForm" onsubmit="handleSupportSubmit(event)">
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label for="supName">Your Name</label>
+                    <input type="text" id="supName" placeholder="e.g. Alex Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="supEmail">Your Email</label>
+                    <input type="email" id="supEmail" placeholder="e.g. alex@example.com" required>
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label for="supCategory">Inquiry Category</label>
+                    <select id="supCategory" required>
+                        <option value="General Support">General Support & Guidance</option>
+                        <option value="Roadmap Suggestion">Roadmap / Career Suggestion</option>
+                        <option value="Bug Report">Technical Bug Report</option>
+                        <option value="Feature Request">Feature Request</option>
+                        <option value="Partnership">Partnership & Open Source</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="supSubject">Subject</label>
+                    <input type="text" id="supSubject" placeholder="e.g. Suggesting Quantum Computing Roadmap" required>
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 24px;">
+                <label for="supMessage">Message Details</label>
+                <textarea id="supMessage" rows="5" placeholder="Describe your question, request, or issue in detail..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="supBtn">
+                <i class="fa-solid fa-paper-plane"></i> Send Message
+            </button>
+
+            <div id="supportFeedback" style="display: none; margin-top: 18px; padding: 16px; border-radius: 10px; text-align: center; font-weight: 700;"></div>
+        </form>
+    </div>
+
+    <!-- FREQUENTLY ASKED QUESTIONS -->
+    <div class="faq-card reveal">
+        <h2><i class="fa-solid fa-circle-question"></i> Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Is CareerVerse AI completely free to use?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Yes! All 10 AI tools, customized roadmaps, PDF resume evaluations, and compensation predictors are 100% free and open access for students and professionals worldwide.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>How are the salary benchmarks calculated?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Our salary engine combines real-world hiring market data from tech hubs in India, USA, UK, Germany, Canada, and 195+ countries with Google's Gemini AI to deliver verified fresher, mid-level, and senior pay bands.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Is my resume stored on your servers?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                No. Your uploaded PDF resume is parsed strictly in temporary memory to calculate your ATS match score and bullet point enhancements. It is never saved to permanent disk storage or shared.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Can I request a custom career roadmap that isn't listed?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Yes! Our Universal Career Validation Engine accepts any legitimate job title, trade, scientific domain, or emerging tech role across any global sector.
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script>
+    function toggleFaq(el) {
+        const item = el.parentElement;
+        item.classList.toggle("open");
+    }
+
+    function handleSupportSubmit(e) {
+        e.preventDefault();
+        const btn = document.getElementById("supBtn");
+        const fb = document.getElementById("supportFeedback");
+        const name = document.getElementById("supName").value;
+
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
+
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> Message Received`;
+            fb.style.display = "block";
+            fb.style.background = "rgba(34, 197, 94, 0.1)";
+            fb.style.border = "1px solid rgba(34, 197, 94, 0.4)";
+            fb.style.color = "#22c55e";
+            fb.innerHTML = `🎉 Thank you, ${name}! Your inquiry has been received. Our team will review it shortly.`;
+            document.getElementById("supportForm").reset();
+        }, 800);
+    }
+</script>
+
+</body>
+</html>

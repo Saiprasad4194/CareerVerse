@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Generate your personalized AI career roadmap in seconds — step-by-step phases, salary benchmarks, top skills, and a downloadable PDF plan.">
+    <title>AI Career Roadmap Generator | CareerVerse AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?v=20260809_v5">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/generate.css') }}?v=20260809_v5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+
+<!-- ═══════════════════════════════════════════
+     HERO SECTION
+     ═══════════════════════════════════════════ -->
+<section class="hero reveal">
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            <span></span>
+            AI ROADMAP GENERATOR · POWERED BY GEMINI
+        </div>
+
+        <h1>
+            Build Your Career,<br>
+            <span>Step by Step with AI.</span>
+        </h1>
+
+        <p>
+            Type any career role and get a complete, phase-by-phase learning roadmap — skills to master,
+            milestones to hit, real salary ranges, and a downloadable PDF action plan. Free. Instant. No login.
+        </p>
+
+        <!-- What you get -->
+        <div class="hero-output-pills">
+            <span class="output-pill"><i class="fa-solid fa-route"></i> Phase-by-phase roadmap</span>
+            <span class="output-pill"><i class="fa-solid fa-indian-rupee-sign"></i> Salary benchmarks</span>
+            <span class="output-pill"><i class="fa-solid fa-file-pdf"></i> PDF download</span>
+            <span class="output-pill"><i class="fa-solid fa-chart-line"></i> Top skills list</span>
+        </div>
+
+        <div class="hero-buttons">
+            <a href="#roadmap-form" class="main-btn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate My Roadmap
+            </a>
+            <a href="/ai-tools" class="secondary-btn">
+                <i class="fa-solid fa-layer-group"></i> All 10 AI Tools
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Right: Preview Card -->
+    <div class="hero-visual">
+        <div class="roadmap-preview-visual">
+            <div class="visual-header">
+                <i class="fa-solid fa-route visual-icon"></i>
+                <div>
+                    <strong>AI Roadmap Engine</strong>
+                    <small>Powered by Gemini AI · Instant results</small>
+                </div>
+            </div>
+
+            <!-- Sample output preview -->
+            <div class="visual-sample-role">
+                <span class="vsample-tag">SAMPLE OUTPUT</span>
+                <strong>Full Stack Developer</strong>
+            </div>
+
+            <div class="visual-steps">
+                <div class="v-step done">
+                    <span class="v-num"><i class="fa-solid fa-check"></i></span>
+                    <div class="v-step-info">
+                        <span class="v-title">Phase 1: Web Fundamentals</span>
+                        <small>HTML, CSS, JavaScript, Git</small>
+                    </div>
+                </div>
+                <div class="v-step active">
+                    <span class="v-num">02</span>
+                    <div class="v-step-info">
+                        <span class="v-title">Phase 2: Backend & Databases</span>
+                        <small>Node.js, SQL, REST APIs</small>
+                    </div>
+                </div>
+                <div class="v-step">
+                    <span class="v-num">03</span>
+                    <div class="v-step-info">
+                        <span class="v-title">Phase 3: Projects & Deployment</span>
+                        <small>Portfolio, Docker, Cloud</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visual-salary-bar">
+                <div class="vsalary-row">
+                    <span>Entry Level</span><strong>₹4–7 LPA</strong>
+                </div>
+                <div class="vsalary-row">
+                    <span>Senior Level</span><strong>₹18–35 LPA</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FORM SECTION
+     ═══════════════════════════════════════════ -->
+<section class="generate-section reveal" id="roadmap-form">
+    <div class="generate-card">
+
+        <!-- Card Header -->
+        <div class="card-header">
+            <div class="card-header-icon">
+                <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <div>
+                <h2>Enter Your Target Career</h2>
+                <p>Pick a quick role below or type your own — then add your country for localized salary data.</p>
+            </div>
+        </div>
+
+        <!-- Quick Select Pills -->
+        <div class="quick-roles-label">
+            <i class="fa-solid fa-bolt"></i> Popular Roles — Click to fill:
+        </div>
+        <div class="quick-roles">
+            <span class="role-pill" data-role="AI & Machine Learning Engineer">⚡ AI Engineer</span>
+            <span class="role-pill" data-role="Full Stack Developer">💻 Full Stack Dev</span>
+            <span class="role-pill" data-role="Data Scientist">📊 Data Scientist</span>
+            <span class="role-pill" data-role="Cyber Security Analyst">🛡️ Cyber Security</span>
+            <span class="role-pill" data-role="DevOps & Cloud Engineer">🚀 DevOps Engineer</span>
+            <span class="role-pill" data-role="Product Manager">🎯 Product Manager</span>
+            <span class="role-pill" data-role="UI/UX Designer">🎨 UI/UX Designer</span>
+            <span class="role-pill" data-role="Blockchain Developer">🔗 Blockchain Dev</span>
+        </div>
+
+        <!-- Inputs -->
+        <div class="input-grid">
+            <div class="input-group">
+                <label for="careerInput">
+                    <i class="fa-solid fa-briefcase"></i> Target Career / Job Role
+                </label>
+                <input id="careerInput" type="text"
+                       placeholder="e.g. AI Engineer, Full Stack Developer, Data Scientist"
+                       autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label for="countryInput">
+                    <i class="fa-solid fa-earth-americas"></i> Preferred Location / Country
+                </label>
+                <input id="countryInput" type="text"
+                       placeholder="e.g. India, USA, UK, Germany, Remote"
+                       autocomplete="off">
+            </div>
+        </div>
+
+        <!-- Generate Button -->
+        <button id="generateBtn" type="button" onclick="generateRoadmapNow()">
+            <i class="fa-solid fa-route"></i> Generate AI Roadmap
+        </button>
+
+        <!-- What you'll get footer -->
+        <div class="form-footer-note">
+            <i class="fa-solid fa-circle-info"></i>
+            Your roadmap will include learning phases, top skills, certification paths, salary bands, and resource recommendations.
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     DOWNLOAD BUTTON (shows after generation)
+     ═══════════════════════════════════════════ -->
+<section class="action-buttons" style="display: none;" id="actionSection">
+    <button id="downloadBtn" type="button">
+        <i class="fa-solid fa-file-pdf"></i> Download PDF Roadmap Report
+    </button>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     RESULT SECTION
+     ═══════════════════════════════════════════ -->
+<section class="result-section reveal">
+    <div class="result-card" id="resultCard">
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <h2>Your AI Roadmap Will Appear Here</h2>
+            <p>
+                Enter your target career above and click
+                <strong>Generate AI Roadmap</strong> —
+                your personalized, phase-by-phase career plan will load right here in seconds.
+            </p>
+            <div class="empty-hints">
+                <span><i class="fa-solid fa-check-circle"></i> Phase-by-phase milestones</span>
+                <span><i class="fa-solid fa-check-circle"></i> Skills to master</span>
+                <span><i class="fa-solid fa-check-circle"></i> Salary ranges</span>
+                <span><i class="fa-solid fa-check-circle"></i> Downloadable PDF</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% include 'partials/footer.html' %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/generate.js') }}?v=20260809_v5"></script>
+
+<script>
+    // Quick role pill selection
+    document.querySelectorAll('.role-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            const input = document.getElementById('careerInput');
+            if (input) {
+                input.value = pill.getAttribute('data-role');
+                input.focus();
+                // Highlight selected pill
+                document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+            }
+        });
+    });
+
+    // Show download button when roadmap generates
+    const observer = new MutationObserver(() => {
+        const actionSection = document.getElementById('actionSection');
+        if (actionSection && window.currentRoadmap) {
+            actionSection.style.display = 'flex';
+        }
+    });
+    const resultCardEl = document.getElementById('resultCard');
+    if (resultCardEl) observer.observe(resultCardEl, { childList: true, subtree: true });
+</script>
+
+</body>
+</html>
