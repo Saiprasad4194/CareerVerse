@@ -3245,22 +3245,6 @@ JSON Format:
     except Exception as e:
         print(f"Compare API Error: {e}")
         return failure("Unable to compare careers. Please try again.")
-
-
-    except json.JSONDecodeError:
-
-        traceback.print_exc()
-
-        return failure(
-            "Gemini returned invalid JSON."
-        )
-
-
-    except Exception as e:
-
-        traceback.print_exc()
-
-        return handle_gemini_error(e)
 # =====================================================
 # Resume Analyzer API (Protected by Secure Processing Layer)
 # =====================================================

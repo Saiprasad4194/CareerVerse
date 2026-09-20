@@ -126,6 +126,7 @@ country: country
         const c2Cities = Array.isArray(c2.top_cities) ? c2.top_cities.slice(0, 3).map(c => typeof c === 'object' ? (c.city || c.name || "Hub") : c).join(", ") : "Global Cities";
 
         const c1Bench = c1.salary_benchmark || {};
+        const c2Bench = c2.salary_benchmark || {};
         const mismatchAlert = data.country_mismatch_warning || "";
 
         result.innerHTML = `
@@ -503,7 +504,7 @@ function createCareerCard(career, isPrimary, countryTarget) {
             
             <!-- Card Header -->
             <div style="background: ${accentBg}; border: 1px solid ${borderColor}; border-radius: 14px; padding: 18px;">
-                <span style="font-size: 0.72rem; font-weight: 800; color: ${badgeColor}; letter-spacing: 1.2px; text-transform: uppercase; display: block; margin-bottom: 6px;">
+                <span style="font-size: 0.72rem; font-weight: 800; color: ${accentColor}; letter-spacing: 1.2px; text-transform: uppercase; display: block; margin-bottom: 6px;">
                     ${badgeLabel}
                 </span>
                 <h2 style="color: var(--text-heading); font-size: 1.45rem; margin: 0; font-weight: 800; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
