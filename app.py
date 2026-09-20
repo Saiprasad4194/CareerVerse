@@ -142,11 +142,14 @@ def add_security_headers(response):
     response.headers["Expires"] = "0"
     return apply_security_headers(response)
 
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
-
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+if os.environ.get("VERCEL"):
+    UPLOAD_FOLDER = "/tmp"
+else:
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+handler = app
 
 
 # =====================================================
