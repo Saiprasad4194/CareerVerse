@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CareerVerse AI — 10 free AI tools to plan your career, check salaries, adjust for cost of living, fix your resume, and find skill gaps. Works for any job in 195+ countries.">
+    <title>CareerVerse AI — Free AI Career Tools</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?v=20260812_v4">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}?v=20260812_v5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-grid-pattern"></div>
+    <div class="hero-container">
+        
+        <!-- Left Column: Content -->
+        <div class="hero-content">
+            <span class="hero-eyebrow">
+                <i class="fa-solid fa-sparkles"></i> 
+                Now Powered by Gemini 1.5 Pro
+            </span>
+            <h1 class="hero-title">
+                Navigate Your Career<br>
+                <span>with Precision.</span>
+            </h1>
+            <p class="hero-subtitle">
+                CareerVerse AI is a free intelligence suite that builds custom learning roadmaps, 
+                calculates realistic salary benchmarks, and analyzes resumes for ATS. No signups, no paywalls.
+            </p>
+            <div class="hero-actions">
+                <a href="/generate" class="main-btn">
+                    <span>Launch Roadmap Generator</span> 
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="#tools" class="ghost-btn">
+                    <span>Explore All 10 Tools</span>
+                </a>
+            </div>
+            <div class="hero-proof">
+                <div class="proof-item"><i class="fa-solid fa-circle-check"></i> 100% Free Forever</div>
+                <div class="proof-divider"></div>
+                <div class="proof-item"><i class="fa-solid fa-shield-halved"></i> Privacy First</div>
+                <div class="proof-divider"></div>
+                <div class="proof-item"><i class="fa-solid fa-globe"></i> 195+ Countries</div>
+            </div>
+        </div>
+
+        <!-- Right Column: Visual UI Playground -->
+        <div class="hero-visual">
+            <div class="visual-card">
+                <div class="card-header">
+                    <div class="window-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    <span class="badge-live"><span class="live-dot"></span> SIMULATED METRICS</span>
+                </div>
+                <div class="card-body">
+                    <div class="career-title-row">
+                        <div class="icon-box"><i class="fa-solid fa-route"></i></div>
+                        <div>
+                            <h4>AI & Machine Learning Engineer</h4>
+                            <small>Tech Hub Focus · India / US</small>
+                        </div>
+                    </div>
+                    <div class="metric-grid">
+                        <div class="metric-box">
+                            <span class="label">MARKET DEMAND</span>
+                            <span class="value val-green">High Growth (94%)</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="label">AVG. SALARY (INDIA)</span>
+                            <span class="value">₹18.5L / yr</span>
+                        </div>
+                    </div>
+                    <div class="roadmap-preview">
+                        <span class="roadmap-label">ROADMAP PHASES</span>
+                        <div class="phase-item">
+                            <div class="phase-meta">
+                                <span>Phase 1: Math & Python Foundations</span>
+                                <span class="percent">100%</span>
+                            </div>
+                            <div class="progress-bar"><div class="bar bar-fill-100"></div></div>
+                        </div>
+                        <div class="phase-item">
+                            <div class="phase-meta">
+                                <span>Phase 2: Core Machine Learning</span>
+                                <span class="percent">65%</span>
+                            </div>
+                            <div class="progress-bar"><div class="bar bar-fill-65"></div></div>
+                        </div>
+                        <div class="phase-item">
+                            <div class="phase-meta">
+                                <span>Phase 3: Deploying Models (MLOps)</span>
+                                <span class="percent">0%</span>
+                            </div>
+                            <div class="progress-bar"><div class="bar bar-fill-0"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ══════════════ QUICK HIGHLIGHTS ══════════════ -->
+<section class="highlights reveal">
+    <div class="highlights-grid">
+        <div class="highlight-card">
+            <div class="hl-icon"><i class="fa-solid fa-route"></i></div>
+            <div class="hl-text">
+                <strong>Career Roadmaps</strong>
+                <span>Step-by-step learning paths for any role</span>
+            </div>
+        </div>
+        <div class="highlight-card">
+            <div class="hl-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+            <div class="hl-text">
+                <strong>Salary Intelligence</strong>
+                <span>Real salary ranges by country & experience</span>
+            </div>
+        </div>
+        <div class="highlight-card">
+            <div class="hl-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+            <div class="hl-text">
+                <strong>Resume Scoring</strong>
+                <span>ATS compatibility checks in seconds</span>
+            </div>
+        </div>
+        <div class="highlight-card">
+            <div class="hl-icon"><i class="fa-solid fa-comments"></i></div>
+            <div class="hl-text">
+                <strong>24/7 AI Mentor</strong>
+                <span>Ask any career question, anytime</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════ ALL 10 TOOLS ══════════════ -->
+<section class="tools-section reveal" id="tools">
+    <div class="section-header">
+        <span class="section-tag">10 AI TOOLS</span>
+        <h2>Everything You Need, One Platform</h2>
+        <p>Each tool is built for a specific career need. Pick one and get results instantly.</p>
+    </div>
+
+    <div class="tools-grid">
+        <a href="/generate" class="tool-card tool-featured card-amber" id="tool-roadmap">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-route"></i></div>
+                <span class="tool-badge badge-popular">Most Popular</span>
+            </div>
+            <h3>Career Roadmap Generator</h3>
+            <p>Get a phase-by-phase learning path for any career — skills, milestones, salary bands, and a PDF you can download.</p>
+            <span class="tool-cta">Generate Roadmap <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/career-match" class="tool-card card-blue" id="tool-match">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-bullseye"></i></div>
+            </div>
+            <h3>Career Match Finder</h3>
+            <p>Describe your interests and skills — AI finds the best career paths that fit you.</p>
+            <span class="tool-cta">Find My Match <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/compare" class="tool-card card-indigo" id="tool-compare">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+            </div>
+            <h3>Career Comparator</h3>
+            <p>Compare two careers side-by-side — salary, difficulty, growth, and job demand.</p>
+            <span class="tool-cta">Compare Careers <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/salary-predictor" class="tool-card card-emerald" id="tool-salary">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+            </div>
+            <h3>Salary Predictor</h3>
+            <p>Enter a role, country, and experience level — get realistic salary benchmarks instantly.</p>
+            <span class="tool-cta">Check Salary <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/career-reality" class="tool-card card-rose" id="tool-reality">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-eye"></i></div>
+            </div>
+            <h3>Career Reality Check</h3>
+            <p>The honest truth — work hours, stress, satisfaction, and what nobody tells you.</p>
+            <span class="tool-cta">Get Reality Check <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/career-intelligence" class="tool-card card-cyan" id="tool-intelligence">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-chart-simple"></i></div>
+            </div>
+            <h3>Career Intelligence</h3>
+            <p>Hiring trends, automation risk, future outlook, and industry growth forecasts.</p>
+            <span class="tool-cta">Explore Intel <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/col-calculator" class="tool-card card-violet" id="tool-col">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-calculator"></i></div>
+            </div>
+            <h3>Cost of Living Calculator</h3>
+            <p>Convert your salary to its purchasing-power-equivalent across 195+ countries.</p>
+            <span class="tool-cta">Adjust Salary <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/resume" class="tool-card card-orange" id="tool-resume">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-file-lines"></i></div>
+            </div>
+            <h3>Resume Analyzer</h3>
+            <p>Upload your resume — get an ATS score, missing keywords, and improvement tips.</p>
+            <span class="tool-cta">Analyze Resume <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/skill-gap" class="tool-card card-purple" id="tool-skillgap">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-chart-line"></i></div>
+            </div>
+            <h3>Skill Gap Analyzer</h3>
+            <p>Find exactly what skills you're missing for your target role and how to close them.</p>
+            <span class="tool-cta">Find Gaps <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/career-chat" class="tool-card tool-live card-green" id="tool-chat">
+            <div class="tool-card-header">
+                <div class="tool-icon"><i class="fa-solid fa-headset"></i></div>
+                <span class="tool-badge badge-live"><span class="live-dot"></span> Live 24/7</span>
+            </div>
+            <h3>AI Career Mentor</h3>
+            <p>Ask anything — interview tips, salary negotiation, career switches, what to learn next.</p>
+            <span class="tool-cta">Start Chatting <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+    </div>
+</section>
+
+
+<!-- ══════════════ HOW IT WORKS ══════════════ -->
+<section class="how-section reveal">
+    <div class="section-header">
+        <span class="section-tag">HOW IT WORKS</span>
+        <h2>Three Steps. That's It.</h2>
+    </div>
+    <div class="how-grid">
+        <div class="how-step">
+            <div class="how-num">01</div>
+            <h3>Choose a Tool</h3>
+            <p>Pick from 9 specialized AI tools — roadmaps, salary checks, resume scoring, and more.</p>
+        </div>
+        <div class="how-connector"><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="how-step">
+            <div class="how-num">02</div>
+            <h3>Enter Your Info</h3>
+            <p>Type your career goal and country — or upload your resume. No account needed.</p>
+        </div>
+        <div class="how-connector"><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="how-step">
+            <div class="how-num">03</div>
+            <h3>Get Your Report</h3>
+            <p>AI generates a detailed analysis in seconds. Download as PDF anytime you want.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════ WHY CAREERVERSE ══════════════ -->
+<section class="why-section reveal">
+    <div class="section-header">
+        <span class="section-tag">WHY CAREERVERSE AI</span>
+        <h2>Built Different</h2>
+    </div>
+    <div class="why-grid">
+        <div class="why-item">
+            <i class="fa-solid fa-infinity"></i>
+            <strong>100% Free</strong>
+            <span>No premium plans, no credits, no catches.</span>
+        </div>
+        <div class="why-item">
+            <i class="fa-solid fa-user-slash"></i>
+            <strong>No Login</strong>
+            <span>Just open any tool and start using it.</span>
+        </div>
+        <div class="why-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <strong>Privacy First</strong>
+            <span>Your data is never stored or shared.</span>
+        </div>
+        <div class="why-item">
+            <i class="fa-solid fa-globe"></i>
+            <strong>Global Data</strong>
+            <span>Salary & market data for 195+ countries.</span>
+        </div>
+        <div class="why-item">
+            <i class="fa-brands fa-google"></i>
+            <strong>Gemini AI</strong>
+            <span>Powered by Google's latest AI models.</span>
+        </div>
+        <div class="why-item">
+            <i class="fa-solid fa-download"></i>
+            <strong>Export to PDF</strong>
+            <span>Download any report as a clean PDF.</span>
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════ FAQ ══════════════ -->
+<section class="faq-section reveal">
+    <div class="section-header">
+        <span class="section-tag">FAQ</span>
+        <h2>Questions? Answered.</h2>
+    </div>
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Is CareerVerse AI really free?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+                <p>Yes. All 10 tools are completely free — no hidden charges, no premium tiers, no subscriptions. You don't even need to create an account.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Is my resume data safe?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+                <p>Absolutely. Your resume is processed in-memory and never saved to any database. We don't store, share, or sell any of your data.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Does it work for careers outside India?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+                <p>Yes — every tool supports 195+ countries. Salaries, job trends, and career advice automatically adjust based on the country you select.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Which tool should I start with?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+                <p>If you know your target career → <strong>Career Roadmap</strong>. If you're undecided → <strong>Career Match</strong>. If you're job hunting → <strong>Resume Analyzer</strong>.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>How accurate are the salary predictions?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+                <p>Our AI uses real-world market data and industry benchmarks. Results are strong estimates — use them as guidance alongside your own research.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════ FINAL CTA ══════════════ -->
+<section class="final-cta reveal">
+    <div class="final-cta-inner">
+        <div class="cta-glow"></div>
+        <h2>Your career clarity is one click away.</h2>
+        <p>Free. No login. Instant results. Powered by Google's Gemini AI.</p>
+        <div class="final-cta-btns">
+            <a href="/generate" class="main-btn" id="final-cta-btn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Build My Career Roadmap
+            </a>
+            <a href="/career-chat" class="ghost-btn" id="final-cta-chat">
+                <i class="fa-solid fa-comments"></i> Talk to AI Mentor
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- FLOATING AI MENTOR -->
+<div class="floating-ai-bar">
+    <a href="/career-chat" class="floating-ai-btn" title="Talk to 24/7 AI Mentor">
+        <div class="floating-bot-icon">
+            <i class="fa-solid fa-headset"></i>
+            <span class="bot-status-dot"></span>
+        </div>
+        <div class="floating-bot-text">
+            <strong>AI Mentor</strong>
+            <small>Ask anything</small>
+        </div>
+    </a>
+</div>
+
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+
+</body>
+</html>

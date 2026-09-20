@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about CareerVerse AI — the AI-powered career platform providing personalized guidance, roadmaps, and market intelligence.">
+
+    <title>About Us | CareerVerse AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}?v=20260807_v9999">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<!-- HERO -->
+<section class="about-hero reveal">
+    <div class="hero-badge">
+        <span></span>
+        ABOUT CAREERVERSE AI
+    </div>
+
+    <h1>Empowering Next-Gen <span>Careers With AI</span></h1>
+    <p>CareerVerse AI is built on a single core belief: Everyone deserves access to intelligent, real-world career guidance — completely free, personalized, and powered by AI.</p>
+</section>
+
+<!-- CORE PILLARS / MISSION GRID -->
+<section class="about-grid">
+    <div class="about-card reveal">
+        <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <h2>Our Mission</h2>
+        <p>Democratize high-end career counseling through free AI tools, custom learning roadmaps, and real-time market data accessible anywhere.</p>
+    </div>
+
+    <div class="about-card reveal reveal-delay-1">
+        <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
+        <h2>Gemini AI Engine</h2>
+        <p>Harnessing Google's Gemini AI to analyze complex technical skill vectors, evaluate resumes, and predict compensation trends.</p>
+    </div>
+
+    <div class="about-card reveal reveal-delay-2">
+        <div class="card-icon"><i class="fa-solid fa-masks-theater"></i></div>
+        <h2>Unfiltered Reality</h2>
+        <p>Providing honest, unvarnished insights into daily work expectations, stress indices, and actual career growth trajectories.</p>
+    </div>
+
+    <div class="about-card reveal reveal-delay-3">
+        <div class="card-icon"><i class="fa-solid fa-globe"></i></div>
+        <h2>Global Scale</h2>
+        <p>Serving students, engineers, and professionals globally with region-specific hiring trends and salary benchmarks.</p>
+    </div>
+</section>
+
+<!-- STATS COUNTER BAR -->
+<section class="stats reveal">
+    <div class="stat-item">
+        <h1 data-count="10" data-suffix=" AI Tools">0</h1>
+        <p>Specialized AI Suite</p>
+    </div>
+    <div class="stat-item">
+        <h1 data-count="195" data-suffix="+">0+</h1>
+        <p>Countries Supported</p>
+    </div>
+    <div class="stat-item">
+        <h1 data-count="3" data-suffix=" Tiers">0</h1>
+        <p>Salary Experience Bands</p>
+    </div>
+    <div class="stat-item">
+        <h1 data-count="100" data-suffix="%">0%</h1>
+        <p>Free & Gemini AI Powered</p>
+    </div>
+</section>
+
+<!-- MISSION BANNER -->
+<section class="mission-banner reveal">
+    <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+    <p>"We believe that early access to <strong>accurate career intelligence</strong> changes lives. Our goal is to eliminate confusion and turn aspirations into structured action."</p>
+</section>
+
+<!-- PLATFORM TOOLKIT SHOWCASE -->
+<section class="about-features">
+    <div class="hero-badge">
+        <span></span>
+        THE CAREERVERSE ECOSYSTEM
+    </div>
+    <h2 class="reveal">10 Power Tools Designed For Your Career Journey</h2>
+
+    <div class="mini-grid">
+        <div class="mini-card reveal"><i class="fa-solid fa-route"></i> <span>AI Roadmap Generator</span></div>
+        <div class="mini-card reveal reveal-delay-1"><i class="fa-solid fa-comments"></i> <span>AI Career Chat</span></div>
+        <div class="mini-card reveal reveal-delay-2"><i class="fa-solid fa-bullseye"></i> <span>Career Match Engine</span></div>
+        <div class="mini-card reveal"><i class="fa-solid fa-chart-line"></i> <span>Skill Gap Analyzer</span></div>
+        <div class="mini-card reveal reveal-delay-1"><i class="fa-solid fa-sack-dollar"></i> <span>AI Salary Predictor</span></div>
+        <div class="mini-card reveal reveal-delay-2"><i class="fa-solid fa-scale-balanced"></i> <span>Career Compare AI</span></div>
+        <div class="mini-card reveal"><i class="fa-solid fa-file-pdf"></i> <span>ATS Resume Evaluator</span></div>
+        <div class="mini-card reveal reveal-delay-1"><i class="fa-solid fa-masks-theater"></i> <span>Career Reality Check</span></div>
+        <div class="mini-card reveal reveal-delay-2"><i class="fa-solid fa-chart-pie"></i> <span>Career Intelligence AI</span></div>
+        <div class="mini-card reveal"><i class="fa-solid fa-calculator"></i> <span>Cost of Living &amp; PPP Calculator</span></div>
+    </div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+
+</body>
+</html>

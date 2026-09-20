@@ -1,0 +1,24 @@
+<nav class="navbar" id="navbar">
+    <a href="/" class="logo">
+        <div class="logo-mark">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="logo-text">
+            <span class="logo-name">CareerVerse</span>
+            <span class="logo-tag">AI Career Platform</span>
+        </div>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+        <li><a href="/" {% if request.path == '/' %}class="active"{% endif %}>Home</a></li>
+        <li><a href="/generate" {% if request.path == '/generate' %}class="active"{% endif %}>Roadmap</a></li>
+        <li><a href="/ai-tools" {% if request.path == '/ai-tools' %}class="active"{% endif %}>AI Hub</a></li>
+        <li><a href="/about" {% if request.path == '/about' %}class="active"{% endif %}>About</a></li>
+    </ul>
+</nav>
