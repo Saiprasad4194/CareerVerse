@@ -1,0 +1,476 @@
+/* ===================================
+   AI SKILL GAP ANALYZER — Executive Dark System & Dashboard
+   Color Scheme: Black (#0a0a0a) + Amber Gold (#facc15) + Emerald (#22c55e)
+=================================== */
+
+.skill-page {
+    width: 96%;
+    max-width: 1600px;
+    margin: calc(var(--nav-height) + 40px) auto 70px;
+    text-align: center;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--accent, #facc15);
+    background: var(--accent-soft, rgba(250, 204, 21, 0.12));
+    border: 1px solid rgba(250, 204, 21, 0.3);
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+}
+
+.skill-page h1 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--text-heading, #f4f4f5);
+    margin-bottom: 12px;
+}
+
+.skill-page h1 span {
+    color: var(--accent, #facc15);
+}
+
+.skill-page > p {
+    color: var(--text-secondary, #a1a1aa);
+    font-size: 1.02rem;
+    max-width: 650px;
+    margin: 0 auto 36px;
+    line-height: 1.65;
+}
+
+.skill-container {
+    background: var(--bg-card, #121215);
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+    border-radius: var(--radius-xl, 20px);
+    padding: 36px;
+    text-align: left;
+    max-width: 820px;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: var(--transition, all 0.3s ease);
+}
+
+.skill-container:hover {
+    border-color: rgba(250, 204, 21, 0.4);
+}
+
+.skill-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent, #facc15);
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.skill-container input,
+.skill-container textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg-primary, #09090b);
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+    outline: none;
+    color: var(--text-primary, #f4f4f5);
+    padding: 16px 18px;
+    border-radius: var(--radius-md, 12px);
+    font-size: 0.95rem;
+    font-family: var(--font-body, inherit);
+    margin-bottom: 24px;
+    transition: var(--transition, all 0.3s ease);
+}
+
+.skill-container input:focus,
+.skill-container textarea:focus {
+    border-color: var(--accent, #facc15);
+    box-shadow: 0 0 18px rgba(250, 204, 21, 0.2);
+}
+
+.skill-container textarea {
+    height: 130px;
+    resize: vertical;
+}
+
+.skill-container input::placeholder,
+.skill-container textarea::placeholder {
+    color: var(--text-muted, #71717a);
+}
+
+#analyzeBtn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius-md, 12px);
+    background: var(--accent, #facc15);
+    color: #09090b;
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: var(--font-body, inherit);
+    cursor: pointer;
+    transition: var(--transition, all 0.3s ease);
+    box-shadow: 0 4px 20px rgba(250, 204, 21, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#analyzeBtn:hover {
+    background: #eab308;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(250, 204, 21, 0.4);
+}
+
+/* EXECUTIVE SKILL GAP DASHBOARD */
+
+.skill-results-container,
+#result {
+    max-width: 900px;
+    margin: 40px auto 0;
+    text-align: left;
+}
+
+.loading-box {
+    background: var(--bg-card, #121215);
+    border: 1px solid var(--border, rgba(255,255,255,0.1));
+    border-radius: 16px;
+    padding: 45px;
+    text-align: center;
+}
+
+.loading-box h2 {
+    color: var(--accent, #facc15);
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+
+.loading-box p {
+    color: var(--text-secondary, #a1a1aa);
+    margin: 0;
+}
+
+.skill-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header Box */
+.dashboard-header-card {
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.08) 0%, rgba(18, 18, 21, 0.9) 100%);
+    border: 1px solid rgba(250, 204, 21, 0.3);
+    border-radius: 18px;
+    padding: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.dashboard-header-card .header-title h2 {
+    margin: 0 0 6px 0;
+    font-size: 1.45rem;
+    color: var(--text-heading, #f4f4f5);
+    font-weight: 800;
+}
+
+.dashboard-header-card .header-title p {
+    margin: 0;
+    color: var(--text-secondary, #a1a1aa);
+    font-size: 0.92rem;
+}
+
+.header-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.status-pill {
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-pill.emerald {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-pill.amber {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-pill.crimson {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* 4-Grid Metrics */
+.metrics-4grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.metric-card {
+    background: var(--bg-card, #121215);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.metric-card:hover {
+    border-color: rgba(250, 204, 21, 0.3);
+    transform: translateY(-3px);
+}
+
+.metric-card .icon-head {
+    font-size: 0.85rem;
+    color: var(--text-muted, #71717a);
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-card .big-val {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+    line-height: 1;
+}
+
+.metric-card .sub-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #a1a1aa);
+    margin: 0;
+}
+
+/* Skill Proficiency Bar Card */
+.proficiency-card {
+    background: var(--bg-card, #121215);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 18px;
+    padding: 28px;
+}
+
+.proficiency-card h3 {
+    margin: 0 0 20px 0;
+    color: var(--accent, #facc15);
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.skill-bar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.skill-bar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.skill-bar-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-heading, #f4f4f5);
+}
+
+.skill-bar-meta span.score-tag {
+    color: var(--accent, #facc15);
+    font-weight: 700;
+}
+
+.skill-bar-track {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #eab308 0%, #facc15 100%);
+    border-radius: 100px;
+    transition: width 1s ease-in-out;
+}
+
+/* Two Column Skills Breakdown */
+.skills-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.verified-box, .missing-box {
+    background: var(--bg-card, #121215);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 18px;
+    padding: 26px;
+}
+
+.verified-box {
+    border-left: 4px solid #22c55e;
+}
+
+.missing-box {
+    border-left: 4px solid #ef4444;
+}
+
+.verified-box h3 {
+    margin: 0 0 16px 0;
+    color: #4ade80;
+    font-size: 1.08rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.missing-box h3 {
+    margin: 0 0 16px 0;
+    color: #f87171;
+    font-size: 1.08rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.skill-tags-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.skill-tag-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    color: var(--text-primary, #e4e4e7);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.4;
+}
+
+.verified-box .skill-tag-item i {
+    color: #22c55e;
+}
+
+.missing-box .skill-tag-item i {
+    color: #ef4444;
+}
+
+/* Priority Action Card */
+.priority-card {
+    background: var(--bg-card, #121215);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 18px;
+    padding: 28px;
+}
+
+.priority-card h3 {
+    margin: 0 0 18px 0;
+    color: var(--accent, #facc15);
+    font-size: 1.12rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.priority-steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.priority-step-item {
+    background: rgba(250, 204, 21, 0.04);
+    border: 1px solid rgba(250, 204, 21, 0.15);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: var(--text-primary, #f4f4f5);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.5;
+}
+
+.priority-step-item .num-badge {
+    background: var(--accent, #facc15);
+    color: #09090b;
+    font-weight: 800;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+/* Strategic Recommendation Card */
+.recommendation-card {
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.1) 0%, rgba(18, 18, 21, 0.95) 100%);
+    border: 1px solid var(--accent, #facc15);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 8px 25px rgba(250, 204, 21, 0.15);
+}
+
+.recommendation-card h3 {
+    margin: 0 0 12px 0;
+    color: var(--accent, #facc15);
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.recommendation-card p {
+    margin: 0;
+    color: var(--text-primary, #e4e4e7);
+    font-size: 0.95rem;
+    line-height: 1.75;
+}
+
+@media (max-width: 860px) {
+    .metrics-4grid { grid-template-columns: 1fr 1fr; }
+    .skills-two-col { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 550px) {
+    .metrics-4grid { grid-template-columns: 1fr; }
+    .skill-container { padding: 24px; }
+}
