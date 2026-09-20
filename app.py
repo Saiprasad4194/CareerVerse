@@ -126,7 +126,11 @@ def generate_with_fallback(prompt):
 # Flask Configuration & Secret Key
 # =====================================================
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
+)
 app.secret_key = os.getenv("SECRET_KEY", "careerverse_secure_session_secret_key_2026")
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB maximum upload limit
 
