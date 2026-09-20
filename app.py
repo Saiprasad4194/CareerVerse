@@ -610,6 +610,21 @@ def home():
     return render_template("index.html")
 
 
+@app.route("/health", methods=["GET", "POST"])
+def health_check():
+    return jsonify({
+        "status": "healthy",
+        "method": request.method,
+        "path": request.path,
+        "supabase": supabase is not None
+    })
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return ("", 204)
+
+
 # =====================================================
 # Generate Roadmap Page
 # =====================================================
