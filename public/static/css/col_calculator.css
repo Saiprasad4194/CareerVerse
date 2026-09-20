@@ -1,0 +1,512 @@
+/* =====================================================
+   CareerVerse AI — Cost of Living & PPP Calculator Styling
+   ===================================================== */
+
+.col-page {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 24px 80px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.col-page h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    margin: 12px 0 16px;
+    letter-spacing: -0.5px;
+}
+
+.col-page h1 span {
+    color: var(--accent);
+}
+
+.col-page p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+}
+
+/* INPUT CARD WITH NEON GLASSMORPHISM */
+.calculator-card {
+    background: rgba(18, 18, 18, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 1000px;
+    margin: 0 auto 50px;
+    text-align: left;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle background glow inside the card */
+.calculator-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(250, 204, 21, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.calculator-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-heading);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.calculator-card h2 i {
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+}
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+}
+
+.calculator-grid .input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calculator-grid label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s ease;
+}
+
+.calculator-grid label i {
+    color: var(--accent);
+    font-size: 0.95rem;
+}
+
+.calculator-grid input,
+.calculator-grid select {
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    padding: 16px 18px;
+    border-radius: 14px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+}
+
+.calculator-grid select option {
+    background: #0a0a0a;
+    color: var(--text-primary);
+}
+
+/* Focused input fields glow up */
+.calculator-grid .input-box:focus-within label {
+    color: var(--accent);
+}
+
+.calculator-grid input:focus,
+.calculator-grid select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 18px rgba(250, 204, 21, 0.15), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: rgba(15, 15, 15, 0.9);
+    transform: translateY(-2px);
+}
+
+/* STUNNING ANIMATED GRADIENT BUTTON */
+#calculateBtn {
+    background: linear-gradient(135deg, var(--accent) 0%, #fb923c 50%, #f43f5e 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 6s ease infinite;
+    color: #0a0a0a;
+    border: none;
+    font-size: 1.05rem;
+    font-weight: 800;
+    padding: 18px 36px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(250, 204, 21, 0.25);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    z-index: 1;
+}
+
+#calculateBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(250, 204, 21, 0.4);
+    color: #000;
+}
+
+#calculateBtn:active {
+    transform: translateY(-1px);
+}
+
+#calculateBtn:disabled {
+    background: var(--border);
+    cursor: not-allowed;
+    box-shadow: none;
+    color: var(--text-secondary);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* LOADING */
+.loading {
+    margin: 40px 0;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--border);
+    border-top: 4px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* RESULTS DASHBOARD GRID */
+.result-dashboard {
+    max-width: 1000px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.results-layout-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    text-align: left;
+}
+
+/* INDIVIDUAL CARDS */
+.dashboard-card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Card Specific Theme & Hover Glow Enhancements */
+.card-ppp {
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.03) 0%, rgba(20, 20, 20, 0.7) 100%);
+    border-color: rgba(250, 204, 21, 0.15);
+}
+.card-ppp:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(250, 204, 21, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.card-ppp .card-icon i {
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+}
+
+.card-conversion {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.02) 0%, rgba(20, 20, 20, 0.7) 100%);
+    border-color: rgba(34, 211, 238, 0.15);
+}
+.card-conversion:hover {
+    transform: translateY(-5px);
+    border-color: #22d3ee;
+    box-shadow: 0 20px 40px rgba(34, 211, 238, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.card-conversion .card-icon i {
+    color: #22d3ee;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+}
+
+.card-market {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.02) 0%, rgba(20, 20, 20, 0.7) 100%);
+    border-color: rgba(249, 115, 22, 0.15);
+}
+.card-market:hover {
+    transform: translateY(-5px);
+    border-color: #f97316;
+    box-shadow: 0 20px 40px rgba(249, 115, 22, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.card-market .card-icon i {
+    color: #f97316;
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+}
+
+.card-col {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.02) 0%, rgba(20, 20, 20, 0.7) 100%);
+    border-color: rgba(168, 85, 247, 0.15);
+}
+.card-col:hover {
+    transform: translateY(-5px);
+    border-color: #a855f7;
+    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.card-col .card-icon i {
+    color: #a855f7;
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+}
+
+.card-recommendation {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(20, 20, 20, 0.7) 100%);
+    border-color: rgba(16, 185, 129, 0.15);
+}
+.card-recommendation:hover {
+    transform: translateY(-5px);
+    border-color: #10b981;
+    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.card-recommendation .card-icon i {
+    color: #10b981;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 14px;
+}
+
+.card-icon {
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-header h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-heading);
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+/* Card Body elements */
+.number-stat {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.card-ppp .number-stat {
+    color: var(--accent);
+}
+
+.stat-explanation {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+/* Warning block inside PPP Card */
+.ppp-warning {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.82rem;
+    color: #f87171;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.5;
+    margin-top: auto;
+}
+
+.ppp-warning i {
+    font-size: 0.95rem;
+    margin-top: 2px;
+}
+
+/* Market salary range */
+.market-range-display {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+}
+
+.range-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+.market-range-display h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 6px 0 0;
+}
+
+/* Cost of Living Category Bar styling */
+.col-bars-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.col-bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bar-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.diff-badge {
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.diff-badge.plus {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.diff-badge.minus {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.bar-track {
+    background: rgba(255, 255, 255, 0.06);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bar-fill.red {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+.bar-fill.green {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+/* Recommendation details */
+.intelligent-analysis-text {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    padding-left: 16px;
+    border-left: 3px solid var(--accent);
+}
+
+.insights-box h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.insights-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.insights-list li {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+/* RESPONSIVE LAYOUT collapses */
+@media (max-width: 900px) {
+    .calculator-grid {
+        grid-template-columns: 1fr;
+    }
+    .results-layout-grid {
+        grid-template-columns: 1fr;
+    }
+    .card-recommendation {
+        grid-column: span 1;
+    }
+    .calculator-card {
+        padding: 24px;
+    }
+}

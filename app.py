@@ -6,7 +6,7 @@ import pdfplumber
 
 from dotenv import load_dotenv
 from google import genai
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, send_from_directory
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import re
@@ -604,10 +604,22 @@ except Exception as e:
 # =====================================================
 
 @app.route("/")
-@app.route("/api/index.py")
-@app.route("/app.py")
 def home():
     return render_template("index.html")
+
+
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    for possible_dir in [
+        os.path.join(BASE_DIR, "public", "static"),
+        os.path.join(BASE_DIR, "public"),
+        os.path.join(BASE_DIR, "static"),
+        os.path.join(os.getcwd(), "public", "static"),
+        os.path.join(os.getcwd(), "static"),
+    ]:
+        if os.path.exists(os.path.join(possible_dir, filename)):
+            return send_from_directory(possible_dir, filename)
+    return send_from_directory(os.path.join(BASE_DIR, "static"), filename)
 
 
 @app.route("/health", methods=["GET", "POST"])
@@ -616,7 +628,7 @@ def health_check():
         "status": "healthy",
         "method": request.method,
         "path": request.path,
-        "supabase": supabase is not None
+        "supabase": get_supabase() is not None
     })
 
 

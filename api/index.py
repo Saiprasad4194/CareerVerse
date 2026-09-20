@@ -9,62 +9,64 @@ if BASE_DIR not in sys.path:
 
 from app import app
 
+
 class VercelPathMiddleware:
     """
-    On Vercel:
-    1. Reads __path__ or path from query string if passed by vercel.json rewrite (e.g. ?__path__=/navigator).
-    2. Falls back to HTTP_X_FORWARDED_URI, HTTP_X_MATCHED_PATH, or RAW_URI.
-    3. Restores WSGI PATH_INFO so Flask routes match accurately.
+    WSGI Middleware to accurately restore PATH_INFO for Vercel Serverless deployments.
+    Handles Vercel proxy headers (x-now-route-matches, x-matched-path, x-forwarded-uri),
+    query string routing parameters, and direct path resolution.
     """
     def __init__(self, wsgi_app):
         self.wsgi_app = wsgi_app
 
     def __call__(self, environ, start_response):
-        query_string = environ.get("QUERY_STRING", "")
         target_path = None
 
-        if query_string:
+        # 1. Check HTTP_X_NOW_ROUTE_MATCHES (Vercel sets this when using named/regex capture groups)
+        matches = environ.get("HTTP_X_NOW_ROUTE_MATCHES")
+        if matches:
             try:
-                parsed_qs = urllib.parse.parse_qs(query_string, keep_blank_values=True)
-                for key in ("__path__", "path"):
-                    if key in parsed_qs:
-                        raw_val = parsed_qs[key][0].strip()
-                        cleaned_val = raw_val.lstrip("/")
-                        if cleaned_val:
-                            target_path = "/" + cleaned_val
-                        # Clean the routing parameter from QUERY_STRING
-                        cleaned_pairs = []
-                        for k, vlist in parsed_qs.items():
-                            if k not in ("__path__", "path"):
-                                for v in vlist:
-                                    cleaned_pairs.append(f"{urllib.parse.quote_plus(k)}={urllib.parse.quote_plus(v)}")
-                        environ["QUERY_STRING"] = "&".join(cleaned_pairs)
-                        break
+                parsed = urllib.parse.parse_qs(matches)
+                for key in ("path", "1", "0"):
+                    if key in parsed and parsed[key][0]:
+                        raw = parsed[key][0].strip().lstrip("/")
+                        if raw and not raw.startswith("api/index") and raw != "app.py" and not raw.startswith("$"):
+                            target_path = "/" + raw
+                            break
+                        elif not raw:
+                            target_path = "/"
+                            break
             except Exception as e:
-                print(f"[PATH_MIDDLEWARE QS ERROR] {e}", file=sys.stderr)
+                print(f"[PATH_MIDDLEWARE MATCHES ERROR] {e}", file=sys.stderr)
 
-        # Fallback to proxy/Vercel headers if target_path not found
+        # 2. Check standard proxy & Vercel headers
         if not target_path or target_path == "/":
-            raw_target = (
-                environ.get("HTTP_X_FORWARDED_URI") or
-                environ.get("HTTP_X_MATCHED_PATH") or
-                environ.get("HTTP_X_ORIGINAL_URI") or
-                environ.get("RAW_URI")
-            )
-            if raw_target:
-                clean = raw_target.split("?")[0].strip().lstrip("/")
-                if clean and not clean.startswith("api/index") and clean != "app.py":
-                    target_path = "/" + clean
+            for header_key in (
+                "HTTP_X_MATCHED_PATH",
+                "HTTP_X_FORWARDED_URI",
+                "HTTP_X_ORIGINAL_URI",
+                "HTTP_X_VERCEL_MATCHED_PATH",
+                "REQUEST_URI",
+                "RAW_URI"
+            ):
+                raw_val = environ.get(header_key)
+                if raw_val:
+                    cleaned = raw_val.split("?")[0].strip().lstrip("/")
+                    if cleaned and not cleaned.startswith("api/index") and cleaned != "app.py" and not cleaned.startswith("$"):
+                        target_path = "/" + cleaned
+                        break
 
-        if target_path:
-            if target_path in ("/api/index.py", "/api/index", "/api", "/app.py"):
-                environ["PATH_INFO"] = "/"
+        # 3. Fallback to existing PATH_INFO
+        if not target_path:
+            current_path = environ.get("PATH_INFO", "")
+            if current_path and current_path not in ("/api/index.py", "/api/index", "/api", "/app.py"):
+                target_path = current_path
             else:
-                environ["PATH_INFO"] = target_path
-        elif environ.get("PATH_INFO", "") in ("/api/index.py", "/api/index", "/api", "/app.py"):
-            environ["PATH_INFO"] = "/"
+                target_path = "/"
 
+        environ["PATH_INFO"] = target_path
         return self.wsgi_app(environ, start_response)
+
 
 app.wsgi_app = VercelPathMiddleware(app.wsgi_app)
 handler = app

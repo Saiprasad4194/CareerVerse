@@ -1,8 +1,17 @@
 {
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{static/**,public/**,templates/**}"
+    }
+  },
   "rewrites": [
     {
+      "source": "/static/:path*",
+      "destination": "/static/:path*"
+    },
+    {
       "source": "/:path*",
-      "destination": "/api/index.py?__path__=/:path*"
+      "destination": "/api/index.py"
     }
   ]
 }
