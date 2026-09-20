@@ -4794,6 +4794,33 @@ RULES:
                 ]
             }
 
+        # --- Surface Salary Predictor Benchmark as part of roadmap output ---
+        try:
+            bench = get_career_salary_benchmark(target_role, country)
+            c_name, code, symbol = get_country_currency_info(country)
+            result["salary_benchmark"] = {
+                "target_role": target_role,
+                "country": c_name or country,
+                "currency_code": code or "USD",
+                "currency_symbol": symbol or "$",
+                "entry_salary": str(bench.get("fresher", "Competitive")),
+                "mid_salary": str(bench.get("mid", "Market Rate")),
+                "senior_salary": str(bench.get("senior", "Top Percentile")),
+                "reason": bench.get("reason", "Based on verified labor registry standards and market data.")
+            }
+        except Exception as sal_err:
+            print(f"[NAVIGATOR ROADMAP SALARY BENCHMARK WARN] {sal_err}")
+            result["salary_benchmark"] = {
+                "target_role": target_role,
+                "country": country,
+                "currency_code": "USD",
+                "currency_symbol": "$",
+                "entry_salary": "Competitive Market Rates",
+                "mid_salary": "Mid-Level Standard",
+                "senior_salary": "Senior Industry Band",
+                "reason": "Market benchmarks tailored to your target career role."
+            }
+
         # --- Write roadmap back to Supabase ---
         if user_id:
             sb_upsert_profile(user_id, {"roadmap_data": result, "current_step": 3})

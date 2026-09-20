@@ -17,9 +17,9 @@
 
     <ul class="nav-links" id="navLinks">
         <li><a href="/" {% if request.path == '/' %}class="active"{% endif %}>Home</a></li>
-        <li><a href="/navigator" {% if request.path == '/navigator' %}class="active"{% endif %} style="color: #a78bfa; font-weight: 600;">⚡ Navigator</a></li>
+        <li><a href="/navigator" class="nav-agent-btn {% if request.path == '/navigator' %}active{% endif %}" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(99,102,241,0.15)); border: 1px solid rgba(139,92,246,0.35); color: #c4b5fd; font-weight: 600; padding: 6px 14px; border-radius: 100px; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-compass" style="color:#a78bfa"></i> Navigator Agent</a></li>
         <li><a href="/generate" {% if request.path == '/generate' %}class="active"{% endif %}>Roadmap</a></li>
-        <li><a href="/ai-tools" {% if request.path == '/ai-tools' %}class="active"{% endif %}>AI Hub</a></li>
+        <li><a href="/ai-tools" {% if request.path == '/ai-tools' %}class="active"{% endif %}>All Tools</a></li>
         <li><a href="/about" {% if request.path == '/about' %}class="active"{% endif %}>About</a></li>
     </ul>
 </nav>

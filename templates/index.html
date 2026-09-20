@@ -30,24 +30,23 @@
         <!-- Left Column: Content -->
         <div class="hero-content">
             <span class="hero-eyebrow">
-                <i class="fa-solid fa-sparkles"></i> 
-                Now Powered by Gemini 1.5 Pro
+                <i class="fa-solid fa-compass"></i> 
+                Autonomous AI Career Agent
             </span>
             <h1 class="hero-title">
                 Navigate Your Career<br>
-                <span>with Precision.</span>
+                <span>with AI Precision.</span>
             </h1>
             <p class="hero-subtitle">
-                CareerVerse AI is a free intelligence suite that builds custom learning roadmaps, 
-                calculates realistic salary benchmarks, and analyzes resumes for ATS. No signups, no paywalls.
+                CareerVerse AI unifies resume parsing, ATS scoring, skill gap diagnostics, verified salary benchmarks, and adaptive roadmaps into one guided agent experience.
             </p>
             <div class="hero-actions">
-                <a href="/generate" class="main-btn">
-                    <span>Launch Roadmap Generator</span> 
+                <a href="/navigator" class="main-btn" id="hero-navigator-cta">
+                    <span>Launch Career Navigator</span> 
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
                 <a href="#tools" class="ghost-btn">
-                    <span>Explore All 10 Tools</span>
+                    <span>Explore Standalone Tools</span>
                 </a>
             </div>
             <div class="hero-proof">
@@ -158,21 +157,51 @@
 <!-- ══════════════ ALL 10 TOOLS ══════════════ -->
 <section class="tools-section reveal" id="tools">
     <div class="section-header">
-        <span class="section-tag">10 AI TOOLS</span>
-        <h2>Everything You Need, One Platform</h2>
-        <p>Each tool is built for a specific career need. Pick one and get results instantly.</p>
+        <span class="section-tag">UNIFIED AGENT &amp; STANDALONE TOOLS</span>
+        <h2>End-to-End Navigation or Instant Tools</h2>
+        <p>Run the full autonomous agent flow below, or pick any individual tool for instant results.</p>
+    </div>
+
+    <!-- PRIMARY AGENT SPOTLIGHT BANNER -->
+    <div class="agent-spotlight-banner">
+        <div class="agent-spotlight-glow"></div>
+        <div class="agent-spotlight-inner">
+            <div class="agent-spotlight-content">
+                <div class="agent-badge-pill">
+                    <span class="pulse-dot"></span>
+                    <span>FLAGSHIP AGENTIC FLOW</span>
+                </div>
+                <h3>Career Navigator Agent</h3>
+                <p>
+                    Why jump across fragmented tools? The Career Navigator orchestrates <strong>ATS Resume Analysis</strong>, <strong>Skill Gap Profiling</strong>, <strong>Market Salary Benchmarking</strong>, and an <strong>Adaptive Learning Roadmap</strong> into one seamless guided journey.
+                </p>
+                <div class="agent-flow-steps">
+                    <span class="flow-step"><i class="fa-solid fa-file-pdf"></i> Profile &amp; ATS</span>
+                    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+                    <span class="flow-step"><i class="fa-solid fa-chart-radar"></i> Skill Gap Radar</span>
+                    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+                    <span class="flow-step"><i class="fa-solid fa-route"></i> Roadmap + Salary</span>
+                    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+                    <span class="flow-step"><i class="fa-solid fa-brain"></i> Adaptive Check-ins</span>
+                </div>
+            </div>
+            <div class="agent-spotlight-action">
+                <a href="/navigator" class="agent-launch-btn">
+                    <span>Launch Navigator Agent</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <small class="agent-action-note"><i class="fa-solid fa-shield-halved"></i> Zero disk retention • No login needed</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="tools-subheading">
+        <span class="tools-subheading-line"></span>
+        <span class="tools-subheading-label">OR USE A STANDALONE TOOL</span>
+        <span class="tools-subheading-line"></span>
     </div>
 
     <div class="tools-grid">
-        <a href="/navigator" class="tool-card tool-featured card-violet" id="tool-navigator" style="background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(79,70,229,0.08)); border-color: rgba(124,58,237,0.25);">
-            <div class="tool-card-header">
-                <div class="tool-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa"><i class="fa-solid fa-compass"></i></div>
-                <span class="tool-badge" style="background:rgba(139,92,246,0.15);color:#a78bfa;border-color:rgba(139,92,246,0.3)">⚡ Agent</span>
-            </div>
-            <h3 style="color:#c4b5fd">Career Navigator Agent</h3>
-            <p>Build your profile, get AI skill gap analysis with explanations, generate a personalized roadmap, and track your progress — all in one adaptive agent.</p>
-            <span class="tool-cta" style="color:#a78bfa">Launch Navigator <i class="fa-solid fa-arrow-right"></i></span>
-        </a>
 
         <a href="/generate" class="tool-card tool-featured card-amber" id="tool-roadmap">
             <div class="tool-card-header">
@@ -401,8 +430,8 @@
         <h2>Your career clarity is one click away.</h2>
         <p>Free. No login. Instant results. Powered by Google's Gemini AI.</p>
         <div class="final-cta-btns">
-            <a href="/generate" class="main-btn" id="final-cta-btn">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Build My Career Roadmap
+            <a href="/navigator" class="main-btn" id="final-cta-btn">
+                <i class="fa-solid fa-compass"></i> Launch Career Navigator Agent
             </a>
             <a href="/career-chat" class="ghost-btn" id="final-cta-chat">
                 <i class="fa-solid fa-comments"></i> Talk to AI Mentor
