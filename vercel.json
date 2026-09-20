@@ -4,14 +4,14 @@
       "includeFiles": "{static/**,public/**,templates/**}"
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/static/:path*",
-      "destination": "/static/:path*"
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
     },
     {
-      "source": "/:path*",
-      "destination": "/api/index.py"
+      "src": "/(.*)",
+      "dest": "/api/index.py"
     }
   ]
 }
