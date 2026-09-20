@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CareerVerse AI Career Navigator — Build your personalized skill profile, identify gaps, generate an adaptive learning roadmap, and track your progress to your dream career.">
+    <title>AI Career Navigator Agent | CareerVerse AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigator.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'partials/navbar.html' %}
+
+<div class="nav-page">
+
+    <!-- ══════════════ HERO ══════════════ -->
+    <section class="nav-hero reveal">
+        <div class="nav-hero-badge">
+            <span class="badge-dot"></span>
+            Agentic AI · Career Navigator
+        </div>
+        <h1>Your Personal<br><span>Career Navigator Agent</span></h1>
+        <p>
+            Tell us who you are — your skills, education, and goals. Our AI agent identifies your skill gaps,
+            builds a personalized learning roadmap, and adapts as you grow.
+        </p>
+        <div class="nav-hero-pills">
+            <span class="nav-pill"><i class="fa-solid fa-user-check"></i> Structured Profile</span>
+            <span class="nav-pill"><i class="fa-solid fa-magnifying-glass-chart"></i> Skill Gap Analysis</span>
+            <span class="nav-pill"><i class="fa-solid fa-route"></i> Adaptive Roadmap</span>
+            <span class="nav-pill"><i class="fa-solid fa-chart-line"></i> Progress Tracking</span>
+            <span class="nav-pill" id="syncStatusBadge" style="border-color: rgba(16,185,129,0.3); color: #34d399;"><i class="fa-solid fa-cloud-check"></i> Supabase Connected</span>
+        </div>
+    </section>
+
+
+    <!-- ══════════════ STEP PROGRESS BAR ══════════════ -->
+    <div class="wizard-container">
+
+        <div class="step-progress" id="stepProgress">
+            <div class="step-item active" id="stepItem1">
+                <div class="step-circle">1</div>
+                <span class="step-label">Your Profile</span>
+            </div>
+            <div class="step-item" id="stepItem2">
+                <div class="step-circle">2</div>
+                <span class="step-label">Skill Gaps</span>
+            </div>
+            <div class="step-item" id="stepItem3">
+                <div class="step-circle">3</div>
+                <span class="step-label">Roadmap</span>
+            </div>
+            <div class="step-item" id="stepItem4">
+                <div class="step-circle"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:0.65rem"></i></div>
+                <span class="step-label">Adapt</span>
+            </div>
+        </div>
+
+
+        <!-- ══════════════ STEP 1: PROFILE BUILDER ══════════════ -->
+        <div class="wizard-panel active" id="panel1">
+            <div class="nav-card">
+                <div class="nav-card-header">
+                    <div class="nav-card-icon icon-violet">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <div class="nav-card-header-text">
+                        <h2>Build Your Career Profile</h2>
+                        <p>The more context you give, the more personalized and accurate your roadmap will be.</p>
+                    </div>
+                </div>
+                <div class="nav-card-body">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="profileName"><i class="fa-solid fa-user"></i> Your Name</label>
+                            <input type="text" id="profileName" placeholder="e.g. Sai Prasad">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileEducation"><i class="fa-solid fa-graduation-cap"></i> Education Level</label>
+                            <select id="profileEducation">
+                                <option value="">Select level...</option>
+                                <option value="High School">High School</option>
+                                <option value="Diploma">Diploma / Certificate</option>
+                                <option value="Pursuing B.Tech/B.E.">Pursuing B.Tech / B.E.</option>
+                                <option value="B.Tech/B.E. Graduate">B.Tech / B.E. Graduate</option>
+                                <option value="B.Sc Graduate">B.Sc Graduate</option>
+                                <option value="BCA Graduate">BCA Graduate</option>
+                                <option value="MCA / M.Tech">MCA / M.Tech</option>
+                                <option value="MBA">MBA</option>
+                                <option value="PhD">PhD</option>
+                                <option value="Bootcamp / Self-taught">Bootcamp / Self-taught</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileDegree"><i class="fa-solid fa-book"></i> Field of Study / Degree</label>
+                            <input type="text" id="profileDegree" placeholder="e.g. Computer Science, Electronics">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileExperience"><i class="fa-solid fa-briefcase"></i> Experience Level</label>
+                            <select id="profileExperience">
+                                <option value="">Select level...</option>
+                                <option value="Student / No experience">Student / No experience</option>
+                                <option value="Fresher (0-1 years)">Fresher (0–1 years)</option>
+                                <option value="Junior (1-3 years)">Junior (1–3 years)</option>
+                                <option value="Mid-level (3-6 years)">Mid-level (3–6 years)</option>
+                                <option value="Senior (6+ years)">Senior (6+ years)</option>
+                            </select>
+                        </div>
+                        <div class="form-group full">
+                            <label for="profileInterests"><i class="fa-solid fa-heart"></i> Interests & Passions</label>
+                            <input type="text" id="profileInterests" placeholder="e.g. AI, web development, problem solving, open-source, gaming">
+                        </div>
+                        <div class="form-group full">
+                            <label><i class="fa-solid fa-code"></i> Current Skills & Technologies</label>
+                            <div class="skills-tags-wrapper" id="skillsTagsWrapper">
+                                <input type="text" id="skillsTagInput" class="tags-input" placeholder="Type a skill & press Enter...">
+                            </div>
+                            <span class="tags-hint">Press Enter or comma to add each skill</span>
+                            <div class="quick-skills" id="quickSkillsRow">
+                                <span class="q-skill">Python</span>
+                                <span class="q-skill">JavaScript</span>
+                                <span class="q-skill">Java</span>
+                                <span class="q-skill">React</span>
+                                <span class="q-skill">SQL</span>
+                                <span class="q-skill">Node.js</span>
+                                <span class="q-skill">Git</span>
+                                <span class="q-skill">HTML/CSS</span>
+                                <span class="q-skill">C++</span>
+                                <span class="q-skill">ML/AI</span>
+                                <span class="q-skill">Docker</span>
+                                <span class="q-skill">AWS</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileTargetRole"><i class="fa-solid fa-bullseye"></i> Target Career / Role</label>
+                            <input type="text" id="profileTargetRole" placeholder="e.g. AI Engineer, Full Stack Dev, Data Scientist">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileCountry"><i class="fa-solid fa-globe"></i> Preferred Country / Location</label>
+                            <input type="text" id="profileCountry" placeholder="e.g. India, USA, Remote">
+                        </div>
+                        <div class="form-group full">
+                            <label for="profileGoal"><i class="fa-solid fa-flag"></i> Career Goal (in your own words)</label>
+                            <textarea id="profileGoal" placeholder="Describe what you want to achieve — e.g. 'I want to become an AI Engineer at a product company in 12 months...'"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="wizard-nav">
+                        <div class="wizard-nav-right">
+                            <button class="btn-wiz-next" id="btn1Next" onclick="goToStep2()">
+                                Continue <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ══════════════ STEP 2: SKILL GAP ANALYSIS ══════════════ -->
+        <div class="wizard-panel" id="panel2">
+
+            <!-- Profile edit banner -->
+            <div class="edit-profile-banner" id="editProfileBanner">
+                <span id="profileSummaryText">Analyzing for: <strong id="bannerName"></strong></span>
+                <button class="btn-edit-profile" onclick="goToStep(1)">
+                    <i class="fa-solid fa-pen"></i> Edit Profile
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div class="nav-card" id="gapLoadingCard" style="display:none">
+                <div class="nav-card-body">
+                    <div class="analysis-loader">
+                        <div class="loader-rings">
+                            <div class="ring"></div>
+                            <div class="ring"></div>
+                            <div class="ring"></div>
+                        </div>
+                        <h3>Analyzing Your Profile…</h3>
+                        <p>AI is comparing your skills against target role requirements</p>
+                        <div class="loader-steps-list" id="gapLoaderSteps">
+                            <div class="loader-step-item" id="lstep1"><i class="fa-solid fa-circle"></i> Reading your profile</div>
+                            <div class="loader-step-item" id="lstep2"><i class="fa-solid fa-circle"></i> Mapping role requirements</div>
+                            <div class="loader-step-item" id="lstep3"><i class="fa-solid fa-circle"></i> Identifying skill gaps</div>
+                            <div class="loader-step-item" id="lstep4"><i class="fa-solid fa-circle"></i> Prioritizing &amp; explaining gaps</div>
+                            <div class="loader-step-item" id="lstep5"><i class="fa-solid fa-circle"></i> Scoring readiness</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="gapResultsWrap" style="display:none">
+
+                <!-- Top row: Score ring + Stats -->
+                <div class="results-grid" style="margin-bottom:16px">
+                    <div class="nav-card">
+                        <div class="score-ring-wrap">
+                            <div class="score-ring-svg">
+                                <svg viewBox="0 0 120 120" width="120" height="120">
+                                    <defs>
+                                        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#a78bfa"/>
+                                            <stop offset="100%" stop-color="#facc15"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="score-bg" cx="60" cy="60" r="52"/>
+                                    <circle class="score-fill" id="scoreRingCircle" cx="60" cy="60" r="52"/>
+                                </svg>
+                                <div class="score-ring-center">
+                                    <span class="score-num" id="scoreNum">0</span>
+                                    <span class="score-label-sm">/ 100</span>
+                                </div>
+                            </div>
+                            <div class="score-ring-info">
+                                <div class="readiness-status" id="readinessStatus">Analyzing…</div>
+                                <div class="readiness-sub" id="readinessSub">Career readiness score</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-card">
+                        <div class="stats-grid">
+                            <div class="stat-chip">
+                                <span class="stat-chip-label">Career Level</span>
+                                <span class="stat-chip-value violet" id="statLevel">—</span>
+                            </div>
+                            <div class="stat-chip">
+                                <span class="stat-chip-label">Gap Severity</span>
+                                <span class="stat-chip-value amber" id="statSeverity">—</span>
+                            </div>
+                            <div class="stat-chip">
+                                <span class="stat-chip-label">Industry Match</span>
+                                <span class="stat-chip-value green" id="statMatch">—</span>
+                            </div>
+                            <div class="stat-chip">
+                                <span class="stat-chip-label">Skills Found</span>
+                                <span class="stat-chip-value blue" id="statSkillsFound">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="nav-card" style="margin-bottom:16px">
+                    <div class="nav-card-header">
+                        <div class="nav-card-icon icon-violet"><i class="fa-solid fa-chart-radar"></i></div>
+                        <div class="nav-card-header-text">
+                            <h2>Skill Competency Radar</h2>
+                            <p>Visual breakdown of your competency across key skill domains</p>
+                        </div>
+                    </div>
+                    <div class="radar-wrap">
+                        <canvas id="radarChart" width="400" height="260"></canvas>
+                    </div>
+                </div>
+
+                <!-- Prioritized Skill Gaps -->
+                <div class="nav-card" style="margin-bottom:16px">
+                    <div class="nav-card-header">
+                        <div class="nav-card-icon icon-rose"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="nav-card-header-text">
+                            <h2>Prioritized Skill Gaps</h2>
+                            <p>Click each gap to see why it matters and how to close it</p>
+                        </div>
+                    </div>
+                    <div class="nav-card-body">
+                        <div class="section-label-sm">Critical Missing Skills</div>
+                        <div class="gap-list" id="gapList"></div>
+                    </div>
+                </div>
+
+                <!-- Existing Skills -->
+                <div class="nav-card" style="margin-bottom:16px">
+                    <div class="nav-card-header">
+                        <div class="nav-card-icon icon-emerald"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="nav-card-header-text">
+                            <h2>Your Existing Strengths</h2>
+                            <p>Skills you already have that are relevant to your target role</p>
+                        </div>
+                    </div>
+                    <div class="existing-skills-wrap" id="existingSkillsList"></div>
+                </div>
+
+                <!-- AI Recommendation -->
+                <div class="nav-card" style="margin-bottom:20px" id="recommendationCard">
+                    <div class="nav-card-header">
+                        <div class="nav-card-icon icon-amber"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <div class="nav-card-header-text">
+                            <h2>AI Recommendation</h2>
+                            <p>Personalized advice based on your full profile</p>
+                        </div>
+                    </div>
+                    <div class="nav-card-body">
+                        <p id="aiRecommendation" style="color:var(--text-secondary);font-size:0.875rem;line-height:1.7"></p>
+                    </div>
+                </div>
+
+                <div class="wizard-nav">
+                    <button class="btn-wiz-back" onclick="goToStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                    <div class="wizard-nav-right">
+                        <button class="btn-wiz-next" onclick="goToStep3()">
+                            Generate Roadmap <i class="fa-solid fa-route"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error state -->
+            <div id="gapErrorWrap" style="display:none">
+                <div class="nav-card">
+                    <div class="nav-card-body">
+                        <div class="empty-state-sm">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <p id="gapErrorMsg">Could not analyze skill gap. Please try again.</p>
+                            <button class="btn-wiz-next" style="margin-top:16px" onclick="runGapAnalysis()">
+                                <i class="fa-solid fa-rotate-right"></i> Retry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="wizard-nav">
+                    <button class="btn-wiz-back" onclick="goToStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ══════════════ STEP 3: ROADMAP ══════════════ -->
+        <div class="wizard-panel" id="panel3">
+
+            <div class="edit-profile-banner">
+                <span>Personalized roadmap for <strong id="bannerName3"></strong> → <strong id="bannerRole3"></strong></span>
+                <button class="btn-edit-profile" onclick="goToStep(1)">
+                    <i class="fa-solid fa-pen"></i> Edit Profile
+                </button>
+            </div>
+
+            <!-- Loading -->
+            <div class="nav-card" id="roadmapLoadingCard" style="display:none">
+                <div class="nav-card-body">
+                    <div class="analysis-loader">
+                        <div class="loader-rings">
+                            <div class="ring"></div>
+                            <div class="ring"></div>
+                            <div class="ring"></div>
+                        </div>
+                        <h3>Building Your Roadmap…</h3>
+                        <p>Creating a personalized phase-by-phase learning plan</p>
+                        <div class="loader-steps-list">
+                            <div class="loader-step-item active" id="rstep1"><i class="fa-solid fa-circle"></i> Designing learning phases</div>
+                            <div class="loader-step-item" id="rstep2"><i class="fa-solid fa-circle"></i> Mapping skill milestones</div>
+                            <div class="loader-step-item" id="rstep3"><i class="fa-solid fa-circle"></i> Selecting real resources</div>
+                            <div class="loader-step-item" id="rstep4"><i class="fa-solid fa-circle"></i> Tailoring to your profile</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roadmap results -->
+            <div id="roadmapResultsWrap" style="display:none">
+
+                <!-- Progress bar summary -->
+                <div class="progress-summary" id="progressSummary">
+                    <div class="progress-summary-text">
+                        <strong id="progressLabel">0 of 0 milestones done</strong>
+                        <span id="progressSubtext">Check off milestones as you complete them</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div>
+                        </div>
+                        <div class="progress-pct" id="progressPct">0%</div>
+                    </div>
+                </div>
+
+                <!-- Roadmap overview card -->
+                <div class="nav-card" style="margin-bottom:16px" id="roadmapOverviewCard">
+                    <div class="nav-card-header">
+                        <div class="nav-card-icon icon-violet"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <div class="nav-card-header-text">
+                            <h2 id="roadmapTitle">Your Career Roadmap</h2>
+                            <p id="roadmapSubtitle">Check off milestones as you complete them — the roadmap adapts to your progress</p>
+                        </div>
+                    </div>
+                    <div class="nav-card-body">
+                        <div class="roadmap-timeline" id="roadmapTimeline"></div>
+                    </div>
+                </div>
+
+                <div class="wizard-nav">
+                    <button class="btn-wiz-back" onclick="goToStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                    <div class="wizard-nav-right">
+                        <button class="btn-wiz-next" onclick="goToStep(4)">
+                            Get Adaptive Advice <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Error state -->
+            <div id="roadmapErrorWrap" style="display:none">
+                <div class="nav-card">
+                    <div class="nav-card-body">
+                        <div class="empty-state-sm">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <p id="roadmapErrorMsg">Could not generate roadmap. Please try again.</p>
+                            <button class="btn-wiz-next" style="margin-top:16px" onclick="runRoadmapGeneration()">
+                                <i class="fa-solid fa-rotate-right"></i> Retry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="wizard-nav">
+                    <button class="btn-wiz-back" onclick="goToStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ══════════════ STEP 4: ADAPTIVE RECOMMENDATIONS ══════════════ -->
+        <div class="wizard-panel" id="panel4">
+
+            <div class="edit-profile-banner">
+                <span>Adaptive analysis for <strong id="bannerName4"></strong> based on your progress</span>
+                <button class="btn-edit-profile" onclick="goToStep(1)">
+                    <i class="fa-solid fa-pen"></i> Edit Profile
+                </button>
+            </div>
+
+            <!-- Trigger button -->
+            <div class="adapt-trigger-wrap">
+                <button class="btn-adapt" id="btnAdapt" onclick="runAdaptiveAnalysis()">
+                    <span class="adapt-pulse"></span>
+                    <i class="fa-solid fa-brain"></i>
+                    Run Adaptive Re-Analysis
+                </button>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-top:10px">
+                    AI will re-evaluate your gaps and recommendations based on milestones you've completed
+                </p>
+            </div>
+
+            <!-- Adaptive result -->
+            <div class="adapt-result" id="adaptResult">
+
+                <!-- Loading spinner inline -->
+                <div class="nav-card" id="adaptLoadingCard" style="display:none">
+                    <div class="nav-card-body">
+                        <div class="analysis-loader" style="padding:32px 20px">
+                            <div class="loader-rings">
+                                <div class="ring"></div>
+                                <div class="ring"></div>
+                                <div class="ring"></div>
+                            </div>
+                            <h3>Re-analyzing your progress…</h3>
+                            <p>Updating recommendations based on completed milestones</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result content -->
+                <div id="adaptContent" style="display:none">
+
+                    <!-- Progress motivation summary -->
+                    <div class="adapt-summary-card" id="adaptSummaryCard">
+                        <h4><i class="fa-solid fa-chart-line"></i> Progress Summary</h4>
+                        <p id="adaptSummaryText"></p>
+                    </div>
+
+                    <!-- Updated priority gaps -->
+                    <div class="nav-card" style="margin-bottom:16px" id="adaptGapsCard">
+                        <div class="nav-card-header">
+                            <div class="nav-card-icon icon-rose"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="nav-card-header-text">
+                                <h2>Updated Priority Gaps</h2>
+                                <p>Re-prioritized based on your current progress</p>
+                            </div>
+                        </div>
+                        <div class="nav-card-body">
+                            <div class="gap-list" id="adaptGapList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Next 3 recommended actions -->
+                    <div class="nav-card" style="margin-bottom:20px">
+                        <div class="nav-card-header">
+                            <div class="nav-card-icon icon-amber"><i class="fa-solid fa-list-check"></i></div>
+                            <div class="nav-card-header-text">
+                                <h2>Next Best Actions</h2>
+                                <p>Your top 3 recommended focus areas right now</p>
+                            </div>
+                        </div>
+                        <div class="nav-card-body">
+                            <div class="next-actions-list" id="nextActionsList"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Error -->
+                <div id="adaptError" style="display:none">
+                    <div class="nav-card">
+                        <div class="nav-card-body">
+                            <div class="empty-state-sm">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                                <p id="adaptErrorMsg">Could not run adaptive analysis.</p>
+                                <button class="btn-adapt" style="margin-top:16px" onclick="runAdaptiveAnalysis()">
+                                    <i class="fa-solid fa-rotate-right"></i> Retry
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="wizard-nav" style="margin-top:20px">
+                <button class="btn-wiz-back" onclick="goToStep(3)"><i class="fa-solid fa-arrow-left"></i> Back to Roadmap</button>
+                <div class="wizard-nav-right">
+                    <button class="btn-wiz-next" onclick="goToStep(1)" style="background:rgba(255,255,255,0.08);color:var(--text-primary)">
+                        <i class="fa-solid fa-user-pen"></i> Update Profile
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div><!-- /wizard-container -->
+</div><!-- /nav-page -->
+
+
+{% include 'partials/footer.html' %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='js/navigator.js') }}"></script>
+
+</body>
+</html>

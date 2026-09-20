@@ -4210,6 +4210,730 @@ Return ONLY a valid JSON list of 3 strings. Example: ["tip 1", "tip 2", "tip 3"]
         return failure("An error occurred during Cost of Living calculation.", 500)
 
 # =====================================================
+# Career Navigator Agent — Supabase-backed
+# =====================================================
+
+# ── Supabase client (lazy init) ──────────────────────────────
+_supabase_client = None
+
+def get_supabase():
+    global _supabase_client
+    if _supabase_client is not None:
+        return _supabase_client
+    sb_url = os.getenv("SUPABASE_URL", "").strip()
+    sb_key = os.getenv("SUPABASE_KEY", "").strip()
+    if not sb_url or not sb_key or "your_" in sb_url or "your_" in sb_key:
+        return None   # Supabase not configured — graceful degradation
+    try:
+        from supabase import create_client
+        _supabase_client = create_client(sb_url, sb_key)
+        print("[SUPABASE] Client initialised successfully")
+        return _supabase_client
+    except Exception as e:
+        print(f"[SUPABASE] Init failed: {e}")
+        return None
+
+def sb_get_profile(user_id: str) -> dict | None:
+    """Fetch a profile row by UUID. Returns None if Supabase unavailable or not found."""
+    sb = get_supabase()
+    if not sb:
+        return None
+    try:
+        res = sb.table("navigator_profiles").select("*").eq("id", user_id).limit(1).execute()
+        if res.data:
+            return res.data[0]
+        return None
+    except Exception as e:
+        print(f"[SUPABASE] get_profile error: {e}")
+        return None
+
+def sb_upsert_profile(user_id: str, fields: dict) -> dict | None:
+    """
+    Upsert a profile row. `fields` is a partial dict — only provided keys are updated.
+    Returns the saved row, or None on failure.
+    """
+    sb = get_supabase()
+    if not sb:
+        return None
+    try:
+        payload = {"id": user_id, **fields}
+        res = sb.table("navigator_profiles").upsert(payload, on_conflict="id").execute()
+        return res.data[0] if res.data else None
+    except Exception as e:
+        print(f"[SUPABASE] upsert_profile error: {e}")
+        return None
+
+def _profile_row_to_dict(row: dict) -> dict:
+    """Convert a Supabase profile row to the frontend-expected profile dict."""
+    if not row:
+        return {}
+    return {
+        "profileName":       row.get("name", ""),
+        "profileEducation":  row.get("education", ""),
+        "profileDegree":     row.get("degree", ""),
+        "profileExperience": row.get("experience", ""),
+        "profileInterests":  row.get("interests", ""),
+        "profileTargetRole": row.get("target_role", ""),
+        "profileCountry":    row.get("country", "India"),
+        "profileGoal":       row.get("goal", ""),
+    }
+
+def _build_profile_upsert(profile: dict, current_skills: list) -> dict:
+    """Convert frontend profile dict → Supabase column names."""
+    return {
+        "name":          profile.get("profileName", ""),
+        "education":     profile.get("profileEducation", ""),
+        "degree":        profile.get("profileDegree", ""),
+        "experience":    profile.get("profileExperience", ""),
+        "interests":     profile.get("profileInterests", ""),
+        "target_role":   profile.get("profileTargetRole", ""),
+        "country":       profile.get("profileCountry", "India"),
+        "goal":          profile.get("profileGoal", ""),
+        "current_skills": current_skills or [],
+    }
+
+
+# ── Page route — sets UUID cookie ────────────────────────────
+@app.route("/navigator")
+def navigator():
+    from flask import make_response, request as freq
+    import uuid as uuid_lib
+
+    resp = make_response(render_template("navigator.html"))
+
+    # Set a long-lived UUID cookie if not present
+    user_id = freq.cookies.get("cv_user_id")
+    if not user_id:
+        user_id = str(uuid_lib.uuid4())
+        resp.set_cookie(
+            "cv_user_id", user_id,
+            max_age=60 * 60 * 24 * 365,   # 1 year
+            httponly=False,                 # JS needs to read it
+            samesite="Lax"
+        )
+        # Pre-create blank profile row in Supabase
+        sb_upsert_profile(user_id, {"current_step": 1})
+
+    return resp
+
+
+# ── Profile Init — called by JS on page load ─────────────────
+@app.route("/navigator-profile-init", methods=["POST"])
+def navigator_profile_init():
+    """
+    Fetches or creates a profile for the given user_id UUID.
+    Called by the frontend on DOMContentLoaded.
+    Returns the full profile including gap_data, roadmap_data, milestones.
+    """
+    try:
+        data    = request.get_json() or {}
+        user_id = data.get("user_id", "").strip()
+        import uuid as uuid_lib
+        # Validate UUID
+        try:
+            uuid_lib.UUID(user_id)
+        except (ValueError, AttributeError):
+            return failure("Invalid user_id.", 400)
+
+        row = sb_get_profile(user_id)
+        if not row:
+            # First time — create blank row
+            row = sb_upsert_profile(user_id, {"current_step": 1}) or {}
+
+        profile = _profile_row_to_dict(row)
+
+        return jsonify({
+            "success": True,
+            "user_id": user_id,
+            "profile": profile,
+            "current_skills": row.get("current_skills") or [],
+            "gap_data":        row.get("gap_data"),
+            "roadmap_data":    row.get("roadmap_data"),
+            "milestones":      row.get("completed_milestones") or {},
+            "current_step":    row.get("current_step", 1),
+        })
+
+    except Exception as e:
+        print(f"[PROFILE INIT ERROR] {e}")
+        return failure("Could not load profile.")
+
+
+# ── Profile Save — called after profile wizard step 1 ────────
+@app.route("/navigator-profile-save", methods=["POST"])
+def navigator_profile_save():
+    """
+    Saves the user profile to Supabase.
+    Accepts: user_id, profile dict, current_skills array, current_step int.
+    """
+    try:
+        data         = request.get_json() or {}
+        user_id      = data.get("user_id", "").strip()
+        profile      = data.get("profile", {})
+        current_skills = data.get("current_skills", [])
+        current_step = data.get("current_step", 1)
+
+        import uuid as uuid_lib
+        try:
+            uuid_lib.UUID(user_id)
+        except (ValueError, AttributeError):
+            return failure("Invalid user_id.", 400)
+
+        fields = _build_profile_upsert(profile, current_skills)
+        fields["current_step"] = current_step
+
+        row = sb_upsert_profile(user_id, fields)
+        if not row:
+            # Supabase not configured — still return success so app works
+            return jsonify({"success": True, "supabase": False})
+
+        return jsonify({"success": True, "supabase": True})
+
+    except Exception as e:
+        print(f"[PROFILE SAVE ERROR] {e}")
+        return failure("Could not save profile.")
+
+
+# ── Progress Save — called after each milestone toggle ────────
+@app.route("/navigator-progress-save", methods=["POST"])
+def navigator_progress_save():
+    """
+    Persists milestone completion state to Supabase.
+    Accepts: user_id, milestones dict { milestoneId: bool }.
+    """
+    try:
+        data      = request.get_json() or {}
+        user_id   = data.get("user_id", "").strip()
+        milestones = data.get("milestones", {})
+        current_step = data.get("current_step", 3)
+
+        import uuid as uuid_lib
+        try:
+            uuid_lib.UUID(user_id)
+        except (ValueError, AttributeError):
+            return failure("Invalid user_id.", 400)
+
+        sb_upsert_profile(user_id, {
+            "completed_milestones": milestones,
+            "current_step": current_step
+        })
+        return jsonify({"success": True})
+
+    except Exception as e:
+        print(f"[PROGRESS SAVE ERROR] {e}")
+        return failure("Could not save progress.")
+
+
+# ── Gap Analysis API — reads profile from Supabase ───────────
+@app.route("/navigator-gap-api", methods=["POST"])
+def navigator_gap_api():
+    """
+    Profile-aware skill gap analysis. Reads profile from Supabase by user_id.
+    Also accepts inline profile as fallback (when Supabase not configured).
+    Writes gap_data back to Supabase.
+    """
+    try:
+        data    = request.get_json() or {}
+        user_id = data.get("user_id", "").strip()
+
+        # --- Try to load profile from Supabase ---
+        row = sb_get_profile(user_id) if user_id else None
+
+        if row:
+            profile = _profile_row_to_dict(row)
+            current_skills = row.get("current_skills") or []
+        else:
+            # Fallback: accept inline profile from client (Supabase not configured)
+            profile        = data.get("profile", {})
+            current_skills = data.get("current_skills", [])
+
+        target_role = profile.get("profileTargetRole", "").strip()
+        if not target_role:
+            return failure("Please specify a target career role.", 400)
+
+        name       = profile.get("profileName", "User")
+        education  = profile.get("profileEducation", "Not specified")
+        degree     = profile.get("profileDegree", "")
+        experience = profile.get("profileExperience", "Not specified")
+        interests  = profile.get("profileInterests", "")
+        country    = profile.get("profileCountry", "India")
+        goal       = profile.get("profileGoal", "")
+        skills_str = ", ".join(current_skills) if current_skills else "None specified"
+
+        prompt = f"""
+You are CareerVerse AI — a world-class Personalized Career Navigator Agent.
+
+Analyze this user's full profile and produce a comprehensive skill gap analysis for their target career.
+
+USER PROFILE:
+- Name: {name}
+- Education: {education} in {degree}
+- Experience: {experience}
+- Current Skills: {skills_str}
+- Interests: {interests}
+- Target Career Role: {target_role}
+- Preferred Country: {country}
+- Career Goal: {goal}
+
+TASK: Identify skill gaps, prioritize them, and explain each gap clearly.
+
+Return ONLY valid JSON in this exact format:
+{{
+  "skill_gap_score": 65,
+  "career_level": "Junior",
+  "readiness_status": "Partially Prepared",
+  "industry_demand_match": 72,
+  "gap_severity": "Moderate Gap",
+  "skill_analysis": [
+    {{"skill": "Core Technical Skills", "score": 55}},
+    {{"skill": "Specialized Tools & Frameworks", "score": 40}},
+    {{"skill": "System Design & Architecture", "score": 30}},
+    {{"skill": "Soft Skills & Communication", "score": 70}},
+    {{"skill": "Domain Knowledge", "score": 45}}
+  ],
+  "existing_skills": ["Skill A", "Skill B", "Skill C"],
+  "missing_skills": ["Critical Skill 1", "Critical Skill 2", "Critical Skill 3", "Skill 4", "Skill 5", "Skill 6", "Skill 7"],
+  "priority_skills": [
+    "1. Learn Advanced X — directly required for {target_role}",
+    "2. Master Y — 90% of job listings require it",
+    "3. Build Z expertise — differentiates you from other candidates"
+  ],
+  "why_explanations": {{
+    "Critical Skill 1": "This skill is needed because [specific reason tied to {target_role} and the user's background]",
+    "Critical Skill 2": "Without this, you cannot [specific consequence for this role]"
+  }},
+  "how_to_close": {{
+    "Critical Skill 1": "Take [specific real course/resource], build [specific project type], aim for [specific milestone] in 4-6 weeks.",
+    "Critical Skill 2": "Practice [specific activity], contribute to [specific type of project], and obtain [specific certification]."
+  }},
+  "recommendation": "4-5 sentence personalized recommendation for {name} targeting {target_role}, referencing their {education} background and {experience} experience level. Be specific and encouraging."
+}}
+
+RULES:
+1. skill_gap_score: 0-100 (higher = more prepared). Be accurate based on the profile.
+2. missing_skills: exactly 7 specific skills, ordered by priority (most critical first).
+3. why_explanations: explain WHY each of the top 5 missing skills matters for THIS specific role and THIS specific person's background.
+4. how_to_close: provide specific, actionable closing strategy for top 5 gaps with real resource types.
+5. Be specific and personalized — do NOT give generic advice.
+"""
+
+        try:
+            text   = generate_with_fallback(prompt)
+            text   = clean_json(text)
+            result = json.loads(text)
+            if "skill_gap_score" not in result:
+                raise ValueError("Incomplete navigator gap JSON")
+        except Exception as e:
+            print(f"[NAVIGATOR GAP FALLBACK] {e}")
+            result = {
+                "skill_gap_score": 45,
+                "career_level": "Junior",
+                "readiness_status": "Partially Prepared",
+                "industry_demand_match": 60,
+                "gap_severity": "Moderate Gap",
+                "skill_analysis": [
+                    {"skill": "Core Technical Skills", "score": 45},
+                    {"skill": "Specialized Tools", "score": 30},
+                    {"skill": "System Design", "score": 25},
+                    {"skill": "Soft Skills", "score": 65},
+                    {"skill": "Domain Knowledge", "score": 40}
+                ],
+                "existing_skills": current_skills[:5] if current_skills else ["Problem solving", "Analytical thinking"],
+                "missing_skills": [
+                    f"Advanced {target_role} frameworks",
+                    "System design fundamentals",
+                    "CI/CD & DevOps practices",
+                    "Cloud platform expertise",
+                    "Data structures & algorithms",
+                    "API design & integration",
+                    "Testing & quality assurance"
+                ],
+                "priority_skills": [
+                    f"1. Master core {target_role} technical stack",
+                    "2. Build 2-3 real-world portfolio projects",
+                    "3. Obtain an industry-recognized certification",
+                    "4. Contribute to open-source projects",
+                    "5. Develop system design knowledge"
+                ],
+                "why_explanations": {
+                    f"Advanced {target_role} frameworks": f"This is the primary technical requirement for any {target_role} position and directly impacts your hireability.",
+                    "System design fundamentals": "Almost every technical interview for this role includes system design questions."
+                },
+                "how_to_close": {
+                    f"Advanced {target_role} frameworks": "Take a focused online course (Coursera/Udemy), build a project, and document it on GitHub within 6 weeks.",
+                    "System design fundamentals": "Read 'Designing Data-Intensive Applications', practice on LeetCode Design problems."
+                },
+                "recommendation": f"Based on your {experience} background and interest in {target_role}, you have a solid foundation to build on. Focus on closing the technical skill gaps through hands-on projects, and you'll be competitive within 6-9 months of consistent effort."
+            }
+
+        # --- Write gap_data back to Supabase ---
+        if user_id:
+            sb_upsert_profile(user_id, {"gap_data": result, "current_step": 2})
+
+        return success(result)
+
+    except Exception as e:
+        print(f"[NAVIGATOR GAP ERROR] {e}")
+        return failure("Unable to analyze skill gaps. Please try again.")
+
+
+# ── Roadmap API — reads profile+gap from Supabase ────────────
+@app.route("/navigator-roadmap-api", methods=["POST"])
+def navigator_roadmap_api():
+    """
+    Profile-aware roadmap generator. Reads profile and gap_data from Supabase.
+    Writes roadmap_data back to Supabase.
+    """
+    try:
+        data    = request.get_json() or {}
+        user_id = data.get("user_id", "").strip()
+
+        row = sb_get_profile(user_id) if user_id else None
+
+        if row:
+            profile        = _profile_row_to_dict(row)
+            current_skills = row.get("current_skills") or []
+            gap_data       = row.get("gap_data") or {}
+        else:
+            profile        = data.get("profile", {})
+            current_skills = data.get("current_skills", [])
+            gap_data       = data.get("gap_data", {})
+
+        target_role = profile.get("profileTargetRole", "").strip()
+        if not target_role:
+            return failure("Target role is required.", 400)
+
+        name       = profile.get("profileName", "User")
+        education  = profile.get("profileEducation", "Not specified")
+        experience = profile.get("profileExperience", "Not specified")
+        country    = profile.get("profileCountry", "India")
+        goal       = profile.get("profileGoal", "")
+        skills_str = ", ".join(current_skills) if current_skills else "None"
+
+        missing     = gap_data.get("missing_skills", [])[:5] if gap_data else []
+        missing_str = ", ".join(missing) if missing else "to be determined"
+
+        prompt = f"""
+You are CareerVerse AI — a world-class Career Navigator Agent.
+
+Create a structured, personalized learning roadmap for this user.
+
+USER PROFILE:
+- Name: {name}
+- Education: {education}
+- Experience: {experience}
+- Current Skills: {skills_str}
+- Target Career: {target_role}
+- Country: {country}
+- Goal: {goal}
+- Top Skill Gaps to Address: {missing_str}
+
+Generate a 4-phase learning roadmap. Return ONLY valid JSON:
+{{
+  "roadmap_title": "Your {target_role} Roadmap",
+  "total_duration": "9-12 months",
+  "phases": [
+    {{
+      "title": "Phase 1: Foundations",
+      "duration": "0-2 months",
+      "description": "Build the essential knowledge base",
+      "skills": ["Skill A", "Skill B", "Skill C", "Skill D"],
+      "milestones": [
+        {{"title": "Complete Python fundamentals course", "type": "Course"}},
+        {{"title": "Build a basic CRUD application", "type": "Project"}},
+        {{"title": "Set up GitHub portfolio", "type": "Setup"}},
+        {{"title": "Read specific documentation", "type": "Study"}}
+      ],
+      "resources": [
+        {{"name": "Python.org Docs", "url": "https://docs.python.org/3/"}},
+        {{"name": "freeCodeCamp", "url": "https://www.freecodecamp.org/"}},
+        {{"name": "The Odin Project", "url": "https://www.theodinproject.com/"}}
+      ]
+    }},
+    {{
+      "title": "Phase 2: Core Skills",
+      "duration": "2-5 months",
+      "description": "Master the primary technical skills for {target_role}",
+      "skills": ["Skill X", "Skill Y", "Skill Z", "Framework A"],
+      "milestones": [
+        {{"title": "Complete a core role course", "type": "Course"}},
+        {{"title": "Build a portfolio project", "type": "Project"}},
+        {{"title": "Deploy first project to cloud", "type": "Project"}},
+        {{"title": "Contribute to an open-source repo", "type": "Community"}}
+      ],
+      "resources": [
+        {{"name": "Coursera", "url": "https://www.coursera.org/"}},
+        {{"name": "LeetCode", "url": "https://leetcode.com/"}},
+        {{"name": "YouTube: Fireship", "url": "https://www.youtube.com/@Fireship"}}
+      ]
+    }},
+    {{
+      "title": "Phase 3: Advanced & Specialization",
+      "duration": "5-8 months",
+      "description": "Go deep on advanced topics and specialization",
+      "skills": ["Advanced A", "Architecture", "Best Practices", "Testing"],
+      "milestones": [
+        {{"title": "Obtain an industry certification", "type": "Certification"}},
+        {{"title": "Build a full-scale portfolio project", "type": "Project"}},
+        {{"title": "Study system design", "type": "Study"}},
+        {{"title": "Complete mock interviews", "type": "Practice"}}
+      ],
+      "resources": [
+        {{"name": "LeetCode", "url": "https://leetcode.com/"}},
+        {{"name": "System Design Primer", "url": "https://github.com/donnemartin/system-design-primer"}},
+        {{"name": "AWS Free Tier", "url": "https://aws.amazon.com/free/"}}
+      ]
+    }},
+    {{
+      "title": "Phase 4: Job Ready",
+      "duration": "8-12 months",
+      "description": "Polish your profile and land your first {target_role} role",
+      "skills": ["Portfolio", "Resume", "Interview Prep", "Networking"],
+      "milestones": [
+        {{"title": "Complete and deploy 3 portfolio projects", "type": "Project"}},
+        {{"title": "Apply to 20+ positions", "type": "Job Search"}},
+        {{"title": "Clear 5 technical mock interviews", "type": "Practice"}},
+        {{"title": "Optimize LinkedIn and GitHub profile", "type": "Setup"}}
+      ],
+      "resources": [
+        {{"name": "LinkedIn", "url": "https://linkedin.com/"}},
+        {{"name": "Pramp", "url": "https://www.pramp.com/"}},
+        {{"name": "Glassdoor", "url": "https://www.glassdoor.com/"}}
+      ]
+    }}
+  ]
+}}
+
+RULES:
+1. Tailor phases specifically to {target_role} and this user's {experience} experience.
+2. Each phase must have exactly 4 milestones — specific and actionable.
+3. All resources must be real, working URLs.
+4. Adjust difficulty based on current skills: {skills_str}.
+5. Milestones must directly address top skill gaps: {missing_str}.
+"""
+
+        try:
+            text   = generate_with_fallback(prompt)
+            text   = clean_json(text)
+            result = json.loads(text)
+            if "phases" not in result:
+                raise ValueError("Missing phases in roadmap JSON")
+        except Exception as e:
+            print(f"[NAVIGATOR ROADMAP FALLBACK] {e}")
+            result = {
+                "roadmap_title": f"{target_role} — Learning Roadmap",
+                "total_duration": "9-12 months",
+                "phases": [
+                    {
+                        "title": "Phase 1: Foundations",
+                        "duration": "0-2 months",
+                        "description": "Build your core knowledge base and set up your development environment.",
+                        "skills": ["Programming fundamentals", "Git & GitHub", "Problem solving", "Data structures basics"],
+                        "milestones": [
+                            {"title": "Complete a beginner programming course", "type": "Course"},
+                            {"title": "Set up GitHub profile with bio and pinned repos", "type": "Setup"},
+                            {"title": "Build a simple CLI project", "type": "Project"},
+                            {"title": "Complete 20 LeetCode Easy problems", "type": "Practice"}
+                        ],
+                        "resources": [
+                            {"name": "freeCodeCamp", "url": "https://www.freecodecamp.org/"},
+                            {"name": "Python Docs", "url": "https://docs.python.org/3/"},
+                            {"name": "GitHub Learning Lab", "url": "https://lab.github.com/"}
+                        ]
+                    },
+                    {
+                        "title": "Phase 2: Core Skills",
+                        "duration": "2-5 months",
+                        "description": f"Master the essential technical skills for {target_role}.",
+                        "skills": ["Core frameworks", "APIs & databases", "Testing", "Deployment basics"],
+                        "milestones": [
+                            {"title": f"Complete a {target_role} focused course on Coursera/Udemy", "type": "Course"},
+                            {"title": "Build and deploy a REST API project", "type": "Project"},
+                            {"title": "Contribute to an open-source repository", "type": "Community"},
+                            {"title": "Complete 30 LeetCode Medium problems", "type": "Practice"}
+                        ],
+                        "resources": [
+                            {"name": "Coursera", "url": "https://www.coursera.org/"},
+                            {"name": "LeetCode", "url": "https://leetcode.com/"},
+                            {"name": "freeCodeCamp YouTube", "url": "https://www.youtube.com/@freecodecamp"}
+                        ]
+                    },
+                    {
+                        "title": "Phase 3: Advanced & Specialization",
+                        "duration": "5-8 months",
+                        "description": "Go deep on advanced topics and build production-quality projects.",
+                        "skills": ["System design", "Cloud deployment", "Advanced frameworks", "Best practices"],
+                        "milestones": [
+                            {"title": "Build a full-scale capstone project", "type": "Project"},
+                            {"title": "Obtain a cloud certification (AWS/GCP Free Tier)", "type": "Certification"},
+                            {"title": "Study system design with the Design Primer", "type": "Study"},
+                            {"title": "Complete 5 mock technical interviews", "type": "Practice"}
+                        ],
+                        "resources": [
+                            {"name": "System Design Primer", "url": "https://github.com/donnemartin/system-design-primer"},
+                            {"name": "AWS Free Tier", "url": "https://aws.amazon.com/free/"},
+                            {"name": "Pramp Mock Interviews", "url": "https://www.pramp.com/"}
+                        ]
+                    },
+                    {
+                        "title": "Phase 4: Job Ready",
+                        "duration": "8-12 months",
+                        "description": "Polish your profile and actively job hunt.",
+                        "skills": ["Portfolio curation", "Resume writing", "Interview prep", "Networking"],
+                        "milestones": [
+                            {"title": "Finalize 3 strong portfolio projects with READMEs", "type": "Project"},
+                            {"title": "Optimize LinkedIn and apply to 20+ companies", "type": "Job Search"},
+                            {"title": "Clear 3 technical + 2 HR mock interviews", "type": "Practice"},
+                            {"title": "Connect with 10 professionals in target role on LinkedIn", "type": "Networking"}
+                        ],
+                        "resources": [
+                            {"name": "LinkedIn", "url": "https://linkedin.com/"},
+                            {"name": "Glassdoor", "url": "https://www.glassdoor.com/"},
+                            {"name": "Levels.fyi", "url": "https://www.levels.fyi/"}
+                        ]
+                    }
+                ]
+            }
+
+        # --- Write roadmap back to Supabase ---
+        if user_id:
+            sb_upsert_profile(user_id, {"roadmap_data": result, "current_step": 3})
+
+        return success(result)
+
+    except Exception as e:
+        print(f"[NAVIGATOR ROADMAP ERROR] {e}")
+        return failure("Unable to generate roadmap. Please try again.")
+
+
+# ── Adaptive API — reads everything from Supabase ────────────
+@app.route("/navigator-adapt-api", methods=["POST"])
+def navigator_adapt_api():
+    """
+    Adaptive re-analysis. Reads profile, gap_data, roadmap_data, milestones
+    from Supabase. Returns updated priorities and next actions.
+    """
+    try:
+        data    = request.get_json() or {}
+        user_id = data.get("user_id", "").strip()
+
+        row = sb_get_profile(user_id) if user_id else None
+
+        if row:
+            profile        = _profile_row_to_dict(row)
+            current_skills = row.get("current_skills") or []
+            gap_data       = row.get("gap_data") or {}
+            milestones     = row.get("completed_milestones") or {}
+        else:
+            profile        = data.get("profile", {})
+            current_skills = data.get("current_skills", [])
+            gap_data       = data.get("gap_data", {})
+            milestones     = data.get("milestones", {})
+
+        target_role = profile.get("profileTargetRole", "the target role")
+        name        = profile.get("profileName", "User")
+
+        completed  = [k for k, v in milestones.items() if v]
+        total      = len(milestones)
+        done_count = len(completed)
+        pct        = round((done_count / total) * 100) if total > 0 else 0
+
+        milestone_context = f"{done_count} of {total} milestones completed ({pct}% done)"
+        missing_skills    = gap_data.get("missing_skills", [])[:7] if gap_data else []
+        missing_str       = ", ".join(missing_skills) if missing_skills else "various technical skills"
+
+        prompt = f"""
+You are CareerVerse AI — an adaptive career navigator agent.
+
+Re-evaluate this user's career progress and provide updated, adaptive recommendations.
+
+USER PROFILE:
+- Name: {name}
+- Target Career: {target_role}
+- Current Skills: {", ".join(current_skills) if current_skills else "Not specified"}
+- Original Skill Gaps: {missing_str}
+- Progress: {milestone_context}
+
+TASK: Based on their progress, provide updated gap analysis and next steps.
+
+Return ONLY valid JSON:
+{{
+  "progress_summary": "Motivating 2-3 sentence summary of {name}'s progress. Reference their {pct}% completion. Be specific about what completing {done_count} milestones means for their {target_role} journey.",
+  "updated_gaps": [
+    "Most critical remaining skill 1",
+    "Critical remaining skill 2",
+    "Important skill 3",
+    "Skill 4",
+    "Skill 5"
+  ],
+  "why_explanations": {{
+    "Most critical remaining skill 1": "Why this gap is still the top priority given their current progress",
+    "Critical remaining skill 2": "Why this matters now that they have progressed"
+  }},
+  "how_to_close": {{
+    "Most critical remaining skill 1": "Specific, actionable steps to close this gap at their current level",
+    "Critical remaining skill 2": "Specific resources and actions"
+  }},
+  "next_actions": [
+    "Specific, concrete action they should take THIS WEEK to continue progress toward {target_role}",
+    "Second most important thing to do in the next 2 weeks",
+    "Medium-term focus for the next month that builds on their completed milestones"
+  ]
+}}
+
+RULES:
+1. If 0% done: encourage starting, emphasize foundational steps.
+2. If 25-50% done: celebrate momentum, focus on bridging to intermediate skills.
+3. If 50-75% done: push toward advanced topics and portfolio polish.
+4. If 75%+: focus on job readiness, interviews, and networking.
+5. Be specific to {target_role} — not generic career advice.
+6. next_actions must be immediately actionable (not vague like "keep learning").
+"""
+
+        try:
+            text   = generate_with_fallback(prompt)
+            text   = clean_json(text)
+            result = json.loads(text)
+            if "updated_gaps" not in result:
+                raise ValueError("Missing updated_gaps in adaptive JSON")
+        except Exception as e:
+            print(f"[NAVIGATOR ADAPT FALLBACK] {e}")
+            result = {
+                "progress_summary": f"{name} has completed {done_count} of {total} milestones ({pct}%) on the path to {target_role}. {'Great progress! Keep this momentum going.' if pct >= 30 else 'Every milestone counts — keep going!'}",
+                "updated_gaps": missing_skills[:5] if missing_skills else [
+                    "Advanced technical proficiency",
+                    "Real-world project experience",
+                    "System design knowledge",
+                    "Portfolio completeness",
+                    "Interview readiness"
+                ],
+                "why_explanations": {
+                    (missing_skills[0] if missing_skills else "Advanced technical proficiency"): f"This remains the most critical skill for {target_role} and is tested in most technical interviews.",
+                    (missing_skills[1] if len(missing_skills) > 1 else "Real-world project experience"): "Employers want to see practical application of your skills through real projects."
+                },
+                "how_to_close": {
+                    (missing_skills[0] if missing_skills else "Advanced technical proficiency"): "Dedicate 1-2 hours daily to focused practice through Coursera courses and building mini-projects.",
+                    (missing_skills[1] if len(missing_skills) > 1 else "Real-world project experience"): "Start a new end-to-end project this week and deploy it publicly on GitHub."
+                },
+                "next_actions": [
+                    f"This week: Spend 5 hours on the next uncompleted milestone in Phase {'2' if pct < 50 else '3'} of your roadmap",
+                    f"Next 2 weeks: Build and publish a {'basic' if pct < 40 else 'advanced'} project demonstrating {target_role} skills on GitHub",
+                    f"Next month: {'Strengthen foundations with a structured course' if pct < 30 else 'Focus on system design and start mock interviews to prepare for job applications'}"
+                ]
+            }
+
+        # --- Persist adaptive step ---
+        if user_id:
+            sb_upsert_profile(user_id, {"current_step": 4})
+
+        return success(result)
+
+    except Exception as e:
+        print(f"[NAVIGATOR ADAPT ERROR] {e}")
+        return failure("Unable to run adaptive analysis. Please try again.")
+
+
+
+# =====================================================
 # Run Flask
 # =====================================================
 

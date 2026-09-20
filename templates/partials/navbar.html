@@ -17,6 +17,7 @@
 
     <ul class="nav-links" id="navLinks">
         <li><a href="/" {% if request.path == '/' %}class="active"{% endif %}>Home</a></li>
+        <li><a href="/navigator" {% if request.path == '/navigator' %}class="active"{% endif %} style="color: #a78bfa; font-weight: 600;">⚡ Navigator</a></li>
         <li><a href="/generate" {% if request.path == '/generate' %}class="active"{% endif %}>Roadmap</a></li>
         <li><a href="/ai-tools" {% if request.path == '/ai-tools' %}class="active"{% endif %}>AI Hub</a></li>
         <li><a href="/about" {% if request.path == '/about' %}class="active"{% endif %}>About</a></li>
