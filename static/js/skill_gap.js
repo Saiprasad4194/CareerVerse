@@ -257,6 +257,20 @@ function renderSkillGapDashboard(data, targetCareer, container) {
                 </div>
             </div>
 
+            <!-- 5.1 Vetted Learning Resources (Real Platforms) -->
+            ${(Array.isArray(data.recommended_resources) && data.recommended_resources.length) ? `
+            <div class="priority-card" style="margin-top: 24px;">
+                <h3><i class="fa-solid fa-graduation-cap" style="color: #3b82f6;"></i> Vetted Learning Resources (Real Platforms)</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 14px;">
+                    ${data.recommended_resources.map(r => `
+                        <a href="${r.url || '#'}" target="_blank" rel="noopener noreferrer" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='var(--border)'">
+                            <span style="color: var(--text-primary); font-size: 0.88rem; font-weight: 500;">${r.name}</span>
+                            <span style="font-size: 0.72rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-radius: 4px; padding: 2px 8px; font-weight: 600; text-transform: uppercase;">${r.platform || 'Platform'}</span>
+                        </a>
+                    `).join('')}
+                </div>
+            </div>` : ''}
+
             <!-- 6. Strategic Recommendation -->
             <div class="recommendation-card">
                 <h3><i class="fa-solid fa-lightbulb"></i> AI Executive Recommendation</h3>
