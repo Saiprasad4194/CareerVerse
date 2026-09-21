@@ -249,34 +249,11 @@ python scratch/verify_ppp_logic.py
 
 ---
 
-## ☁️ Deployment on Render
-
-1. Connect your GitHub repository (`shubhodbirajdar928-hash/CareerVerse-AI`) to [Render](https://render.com).
-2. Configure your Web Service:
-   - **Environment**: `Python 3`
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn app:app`
-3. Add Environment Variables:
-   - `GEMINI_API_KEY`: `your_gemini_api_key`
-   - `SECRET_KEY`: `your_randomized_session_secret`
-   - `SECURITY_MODE`: `auto`
-4. Access your live platform at: **`https://careerverse-ai.onrender.com`**
-
----
-
 ## 📜 Documentation Links
 
 - 🛡️ [**SECURITY.md**](SECURITY.md): Full security specifications, STRIDE threat model, and data protection rules.
 - 📐 [**TEE Architecture Document**](docs/TEE_ARCHITECTURE.md): Deep-dive into AWS Nitro Enclaves, vsock communication, and NSM hardware attestation.
 
----
-
-## 👨‍💻 Author
-
-**Shubhod Birajdar**  
-*AI & Machine Learning Software Engineer*  
-- **GitHub**: [@shubhodbirajdar928-hash](https://github.com/shubhodbirajdar928-hash)  
-- **LinkedIn**: [shubhod-birajdar-90b5a832a](https://www.linkedin.com/in/shubhod-birajdar-90b5a832a)
 
 ---
 
