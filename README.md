@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Framework-Flask-000000.svg?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![AI Engine](https://img.shields.io/badge/AI-Google%20Gemini-8E75B2.svg?logo=google&logoColor=white)](https://ai.google.dev/)
-[![Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7.svg?logo=render&logoColor=white)](https://careerverse-ai.onrender.com)
+(https://careerverse-ai.onrender.com)
 [![Security](https://img.shields.io/badge/Architecture-Confidential%20Computing%20%2F%20TEE-22c55e.svg)](SECURITY.md)
 [![Tests](https://img.shields.io/badge/Tests-29%20Passed%20(100%25)-brightgreen.svg)](tests/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
