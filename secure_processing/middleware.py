@@ -107,11 +107,11 @@ def validate_pdf_stream(file_stream: io.BytesIO, max_size_bytes: int = 10 * 1024
     if size > max_size_bytes:
         return False, f"File size ({size / (1024*1024):.1f}MB) exceeds the maximum allowed limit of {max_size_bytes // (1024*1024)}MB."
 
-    header = file_stream.read(5)
+    chunk = file_stream.read(1024)
     file_stream.seek(0)
 
-    # Magic byte check for PDF (%PDF-)
-    if not header.startswith(b"%PDF-"):
+    # Magic byte check for PDF (%PDF- anywhere in header chunk per ISO 32000 spec)
+    if b"%PDF-" not in chunk:
         return False, "Invalid file signature. File is not an authentic PDF document."
 
     return True, ""

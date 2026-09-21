@@ -97,5 +97,66 @@ class TestSecurityAPI(unittest.TestCase):
         self.assertIn("[REDACTED_API_KEY]", clean)
 
 
+    def test_resume_upload_valid_pdf_success_with_fallback(self):
+        valid_pdf_bytes = b"""%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page
+   /Parent 2 0 R
+   /MediaBox [0 0 612 792]
+   /Resources << /Font << /F1 4 0 R >> >>
+   /Contents 5 0 R
+>>
+endobj
+4 0 obj
+<< /Type /Font
+   /Subtype /Type1
+   /BaseFont /Helvetica
+>>
+endobj
+5 0 obj
+<< /Length 73 >>
+stream
+BT
+/F1 12 Tf
+72 712 Td
+(Alice Smith - Senior Software Engineer Python React Docker) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000244 00000 n 
+0000000332 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+455
+%%EOF
+"""
+        data = {
+            "resume": (io.BytesIO(valid_pdf_bytes), "alice_resume.pdf"),
+            "target_role": "Software Engineer"
+        }
+        response = self.client.post("/resume-api", data=data, content_type="multipart/form-data")
+        self.assertEqual(response.status_code, 200)
+        res = response.get_json()
+        self.assertTrue(res["success"])
+        self.assertIn("data", res)
+        self.assertIn("ats_score", res)
+        self.assertIn("Python", res.get("extracted_skills", []))
+        self.assertIn("React", res.get("extracted_skills", []))
+        self.assertIn("Docker", res.get("extracted_skills", []))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -83,7 +83,7 @@
                     <!-- ATS Resume Quick Import Option -->
                     <div class="resume-import-box" id="resumeImportBox">
                         <div class="resume-drop-zone" id="resumeDropZone" onclick="document.getElementById('navResumeFile').click()">
-                            <input type="file" id="navResumeFile" accept=".pdf" style="display:none;" onchange="handleNavResumeUpload(this.files)">
+                            <input type="file" id="navResumeFile" accept=".pdf" style="display:none;" onchange="handleNavResumeUpload(this.files)" onclick="event.stopPropagation()">
                             <div class="drop-zone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                             <div class="drop-zone-text">
                                 <h4>Auto-Fill Profile with ATS Resume Analyzer</h4>

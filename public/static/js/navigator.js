@@ -265,24 +265,37 @@ function initNavResumeDropzone() {
     const dropZone = document.getElementById('resumeDropZone');
     if (!dropZone) return;
 
-    ['dragenter', 'dragover'].forEach(evt => {
-        dropZone.addEventListener(evt, e => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropZone.classList.add('drag-active');
-        });
+    let dragCounter = 0;
+
+    dropZone.addEventListener('dragenter', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter++;
+        dropZone.classList.add('drag-active');
     });
 
-    ['dragleave', 'drop'].forEach(evt => {
-        dropZone.addEventListener(evt, e => {
-            e.preventDefault();
-            e.stopPropagation();
+    dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-active');
+    });
+
+    dropZone.addEventListener('dragleave', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter--;
+        if (dragCounter <= 0) {
+            dragCounter = 0;
             dropZone.classList.remove('drag-active');
-        });
+        }
     });
 
     dropZone.addEventListener('drop', e => {
-        const files = e.dataTransfer.files;
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter = 0;
+        dropZone.classList.remove('drag-active');
+        const files = e.dataTransfer ? e.dataTransfer.files : null;
         if (files && files.length) {
             handleNavResumeUpload(files);
         }
@@ -324,13 +337,40 @@ async function handleNavResumeUpload(files) {
         if (dropZone) dropZone.classList.remove('loading');
         if (uploadingBar) uploadingBar.style.display = 'none';
 
-        if (!json.success || !json.data) {
+        // Clear file input value so re-selecting same file works
+        const navFileInput = document.getElementById('navResumeFile');
+        if (navFileInput) navFileInput.value = '';
+
+        if (!res.ok || json.success === false) {
             alert(json.error || 'Could not parse resume. Please complete the fields below.');
             return;
         }
 
-        const d = json.data;
+        const d = json.data || json;
         state.resumeData = d;
+
+        // 0. Auto-fill Candidate Name if available
+        if (d.candidate_name) {
+            const nameEl = document.getElementById('profileName');
+            if (nameEl && !nameEl.value.trim()) {
+                nameEl.value = d.candidate_name;
+            }
+        }
+
+        // 0.1 Auto-fill Education Level if available
+        if (d.education_level) {
+            const eduSelect = document.getElementById('profileEducation');
+            if (eduSelect && !eduSelect.value) {
+                const targetEdu = d.education_level.toLowerCase();
+                for (let i = 0; i < eduSelect.options.length; i++) {
+                    const optVal = eduSelect.options[i].value.toLowerCase();
+                    if (optVal && (targetEdu.includes(optVal) || optVal.includes(targetEdu))) {
+                        eduSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
 
         // 1. Auto-fill experience level
         if (d.experience_level) {
@@ -357,6 +397,22 @@ async function handleNavResumeUpload(files) {
 
         // 3. Extract and populate skills into tags
         let extractedSkills = [];
+        if (Array.isArray(d.extracted_skills) && d.extracted_skills.length) {
+            d.extracted_skills.forEach(s => {
+                const clean = s.trim();
+                if (clean && clean.length <= 30 && !extractedSkills.includes(clean)) {
+                    extractedSkills.push(clean);
+                }
+            });
+        }
+        if (Array.isArray(d.skills) && d.skills.length) {
+            d.skills.forEach(s => {
+                const clean = s.trim();
+                if (clean && clean.length <= 30 && !extractedSkills.includes(clean)) {
+                    extractedSkills.push(clean);
+                }
+            });
+        }
         if (Array.isArray(d.strengths)) {
             d.strengths.forEach(str => {
                 const clean = str.replace(/^\d+\.\s*/, '').split(/[:—–-]/)[0].trim();
@@ -399,6 +455,8 @@ async function handleNavResumeUpload(files) {
         console.error('[NAVIGATOR] Resume parse error:', err);
         if (dropZone) dropZone.classList.remove('loading');
         if (uploadingBar) uploadingBar.style.display = 'none';
+        const navFileInput = document.getElementById('navResumeFile');
+        if (navFileInput) navFileInput.value = '';
         alert('Failed to analyze resume. Please fill your profile details manually.');
     }
 }
