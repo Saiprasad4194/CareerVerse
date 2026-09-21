@@ -14,8 +14,7 @@
 ---
 
 ### 🌐 Live Web Application
-🔗 **Live on Render**: [**https://careerverse-ai.onrender.com**](https://careerverse-ai.onrender.com)  
-*(Hosted on Render Cloud with automated CI/CD continuous deployment directly from GitHub `main`)*
+🔗https://career-verse-seven.vercel.app/
 
 ---
 
